@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Laboratório didático de Amazon SNS — Dashboard em português do Brasil"
+    />
+    <title>AWS SNS Delivery Lab</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!--
+      Dashboard do laboratório AWS SNS Delivery Lab (pt-BR).
+
+      Esta é a ESTRUTURA/esqueleto montada na Tarefa 15.1: a tela de login (com
+      indicação de bloqueio após 5 falhas por 300s), a navegação entre as áreas, a
+      representação visual da arquitetura (dois tópicos com tipo, seis assinaturas,
+      seis filas de destino e duas DLQs) e as quatro ações principais rotuladas em
+      pt-BR. O conteúdo detalhado é preenchido pelas Tarefas 15.2 a 15.5, que devem
+      usar os "pontos de extensão" marcados com data-extension-point e os ids
+      previsíveis (overview-area, standard-area, fifo-area, comparar-area, dlq-area).
+
+      Observação: este Dashboard é dedicado ao laboratório SNS e vive em web/sns/,
+      sem relação com o Dashboard do laboratório SQS que fica em web/.
+    -->
+
+    <!-- ============================================================= -->
+    <!-- Tela de login (Req. 12.5, 12.6)                                -->
+    <!-- ============================================================= -->
+    <main id="login-screen" class="login-screen" aria-labelledby="login-title">
+      <section class="login-card" role="dialog" aria-modal="true">
+        <h1 id="login-title" class="login-title">AWS SNS Delivery Lab</h1>
+        <p class="login-subtitle">
+          Acesse o painel com seu usuário e senha. Após 5 tentativas inválidas
+          consecutivas, o acesso desta origem é bloqueado por 300 segundos.
+        </p>
+
+        <form id="login-form" class="login-form" novalidate>
+          <div class="field">
+            <label for="login-username">Usuário</label>
+            <input
+              id="login-username"
+              name="username"
+              type="text"
+              autocomplete="username"
+              required
+            />
+          </div>
+
+          <div class="field">
+            <label for="login-password">Senha</label>
+            <input
+              id="login-password"
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              required
+            />
+          </div>
+
+          <button id="login-submit" type="submit" class="btn btn-primary">
+            Entrar
+          </button>
+
+          <!--
+            Área de feedback do login: mensagens de erro, tentativas restantes e
+            indicação de bloqueio por origem (Req. 12.6). Preenchida por auth.js.
+          -->
+          <p
+            id="login-feedback"
+            class="login-feedback"
+            role="alert"
+            aria-live="assertive"
+            hidden
+          ></p>
+
+          <!--
+            Indicação de bloqueio: exibida quando a origem está bloqueada, com a
+            contagem regressiva dos segundos restantes (Req. 12.6).
+          -->
+          <div
+            id="login-lockout"
+            class="login-lockout"
+            role="status"
+            aria-live="polite"
+            hidden
+          >
+            <span class="login-lockout-icon" aria-hidden="true">⛔</span>
+            <span id="login-lockout-text" class="login-lockout-text"></span>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <!-- ============================================================= -->
+    <!-- Painel autenticado: cabeçalho, navegação e as áreas            -->
+    <!-- ============================================================= -->
+    <div id="dashboard" class="dashboard" hidden>
+      <header class="topbar">
+        <div class="topbar-brand">
+          <span class="topbar-logo" aria-hidden="true">📣</span>
+          <span class="topbar-title">AWS SNS Delivery Lab</span>
+        </div>
+        <div class="topbar-meta">
+          <!--
+            Ponto de extensão: horário da última atualização bem-sucedida
+            (Tarefa 15.2 / 15.5 — Req. 3.10, 13.4).
+          -->
+          <span
+            id="last-update"
+            class="topbar-last-update"
+            data-extension-point="last-update"
+          ></span>
+          <button id="logout-button" type="button" class="btn btn-ghost">
+            Sair
+          </button>
+        </div>
+      </header>
+
+      <!-- Navegação entre as áreas: visão geral + as quatro ações principais -->
+      <nav class="nav" aria-label="Áreas do laboratório">
+        <button
+          class="nav-item is-active"
+          type="button"
+          data-area="overview"
+          aria-current="page"
+        >
+          Visão geral
+        </button>
+        <button class="nav-item" type="button" data-area="standard">
+          DISPARAR SNS STANDARD
+        </button>
+        <button class="nav-item" type="button" data-area="fifo">
+          DISPARAR SNS FIFO
+        </button>
+        <button class="nav-item" type="button" data-area="comparar">
+          COMPARAR STANDARD X FIFO
+        </button>
+        <button class="nav-item" type="button" data-area="dlq">
+          TESTAR DLQ DO SNS
+        </button>
+      </nav>
+
+      <!-- Faixa de status/erro global do Dashboard (ex.: dados desatualizados) -->
+      <div
+        id="global-status"
+        class="global-status"
+        role="status"
+        aria-live="polite"
+        hidden
+      ></div>
+
+      <main class="content">
+        <!-- Área 1: Visão geral + arquitetura (Tarefas 15.1 e 15.2) -->
+        <section
+          id="overview-area"
+          class="area is-active"
+          data-area="overview"
+          data-extension-point="overview"
+          aria-labelledby="overview-heading"
+        >
+          <h2 id="overview-heading" class="area-title">Visão geral</h2>
+
+          <!-- Representação visual da arquitetura (Tarefa 15.1 — Req. 3.1, 3.2, 3.3) -->
+          <section class="arch" aria-labelledby="arch-heading">
+            <h3 id="arch-heading" class="area-subtitle">Arquitetura do laboratório</h3>
+            <p class="area-hint">
+              Dois tópicos SNS (Standard e FIFO), seis assinaturas no padrão
+              fan-out, seis filas de destino e duas DLQs do SNS.
+            </p>
+            <p
+              id="arquitetura-aviso"
+              class="arch-aviso"
+              role="status"
+              aria-live="polite"
+              hidden
+            ></p>
+            <!-- Ponto de extensão: cartões da arquitetura desenhados por arquitetura.js -->
+            <div data-extension-point="arquitetura" aria-live="polite"></div>
+          </section>
+
+          <!-- Atalhos para as quatro ações principais (rótulos em pt-BR) -->
+          <section class="actions" aria-labelledby="actions-heading">
+            <h3 id="actions-heading" class="area-subtitle">Ações principais</h3>
+            <div class="actions-grid">
+              <button
+                class="action-card"
+                type="button"
+                data-goto-area="standard"
+              >
+                <span class="action-icon" aria-hidden="true">📤</span>
+                <span class="action-label">DISPARAR SNS STANDARD</span>
+              </button>
+              <button class="action-card" type="button" data-goto-area="fifo">
+                <span class="action-icon" aria-hidden="true">🔢</span>
+                <span class="action-label">DISPARAR SNS FIFO</span>
+              </button>
+              <button
+                class="action-card"
+                type="button"
+                data-goto-area="comparar"
+              >
+                <span class="action-icon" aria-hidden="true">⚖️</span>
+                <span class="action-label">COMPARAR STANDARD X FIFO</span>
+              </button>
+              <button class="action-card" type="button" data-goto-area="dlq">
+                <span class="action-icon" aria-hidden="true">📥</span>
+                <span class="action-label">TESTAR DLQ DO SNS</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- Ponto de extensão: estatísticas e configuração (Tarefa 15.2) -->
+          <section
+            class="overview-stats"
+            data-extension-point="overview-stats"
+            aria-labelledby="overview-stats-heading"
+          >
+            <h3 id="overview-stats-heading" class="area-subtitle">
+              Estatísticas e configuração
+            </h3>
+            <p class="area-placeholder">
+              Estatísticas separadas por cenário (publicadas por tópico,
+              Entrega_Confirmada por fila de destino, presentes por DLQ), o
+              horário da última atualização e os parâmetros de Config_Aplicada e
+              Config_Simulacao serão exibidos aqui.
+            </p>
+          </section>
+        </section>
+
+        <!-- Área 2: DISPARAR SNS STANDARD (Tarefa 15.3 — Req. 4.*) -->
+        <section
+          id="standard-area"
+          class="area"
+          data-area="standard"
+          data-extension-point="standard"
+          aria-labelledby="standard-heading"
+          hidden
+        >
+          <h2 id="standard-heading" class="area-title">DISPARAR SNS STANDARD</h2>
+          <p class="area-placeholder">
+            Formulário de disparo Standard (ID_Pedido 1–80) com validação em
+            pt-BR; após a publicação, exibirá tópico, tipo, ID_Pedido, MessageId e
+            os três destinos, com a notificação visual "Seu pedido foi aprovado e
+            está sendo preparado".
+          </p>
+        </section>
+
+        <!-- Área 3: DISPARAR SNS FIFO (Tarefa 15.3 — Req. 5.*, 11.*) -->
+        <section
+          id="fifo-area"
+          class="area"
+          data-area="fifo"
+          data-extension-point="fifo"
+          aria-labelledby="fifo-heading"
+          hidden
+        >
+          <h2 id="fifo-heading" class="area-title">DISPARAR SNS FIFO</h2>
+          <p class="area-placeholder">
+            Formulário de disparo FIFO (ID_Pedido 1–80, MessageGroupId 1–128) com
+            validação em pt-BR; após a publicação, exibirá tópico, tipo, ID_Pedido,
+            MessageGroupId, MessageId e os três destinos.
+          </p>
+        </section>
+
+        <!-- Área 4: COMPARAR STANDARD X FIFO (Tarefa 15.4 — Req. 7.*) -->
+        <section
+          id="comparar-area"
+          class="area"
+          data-area="comparar"
+          data-extension-point="comparar"
+          aria-labelledby="comparar-heading"
+          hidden
+        >
+          <h2 id="comparar-heading" class="area-title">COMPARAR STANDARD X FIFO</h2>
+          <p class="area-placeholder">
+            Painel de comparação lado a lado (ordem de publicação, ordem de
+            recebimento, MessageId e tipo), com texto explicativo em pt-BR de que o
+            Standard não garante ordenação.
+          </p>
+        </section>
+
+        <!-- Área 5: TESTAR DLQ DO SNS (Tarefa 15.4 — Req. 8.*) -->
+        <section
+          id="dlq-area"
+          class="area"
+          data-area="dlq"
+          data-extension-point="dlq"
+          aria-labelledby="dlq-heading"
+          hidden
+        >
+          <h2 id="dlq-heading" class="area-title">TESTAR DLQ DO SNS</h2>
+          <p class="area-placeholder">
+            Painel de DLQ com seleção de Assinatura_SNS, botão "SIMULAR FALHA DE
+            ENTREGA" (acionamento manual), resultado na DLQ como Evento_Observado,
+            estado "Não confirmado" quando aplicável e confirmação de policy
+            restaurada, com texto explicativo em pt-BR sobre a DLQ do SNS.
+          </p>
+        </section>
+      </main>
+    </div>
+
+    <!-- Módulos JS. Ordem: o orquestrador importa API, auth, navegação e áreas. -->
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>

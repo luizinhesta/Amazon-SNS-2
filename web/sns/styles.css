@@ -1,0 +1,1572 @@
+/*
+ * Estilos do Dashboard AWS SNS Delivery Lab (pt-BR).
+ *
+ * Tarefa 15.1 — estrutura/esqueleto: estilos da tela de login (com indicação de
+ * bloqueio), do cabeçalho, da navegação entre as áreas, da representação visual da
+ * arquitetura (dois tópicos, seis assinaturas, seis filas de destino e duas DLQs)
+ * e dos cartões das quatro ações principais. As Tarefas 15.2 a 15.5 acrescentam
+ * estilos específicos de cada área reutilizando as variáveis definidas aqui.
+ *
+ * Este arquivo é dedicado ao Dashboard SNS (web/sns/) e não interfere no Dashboard
+ * do laboratório SQS (web/styles.css).
+ */
+
+:root {
+  --color-bg: #0f1b2d;
+  --color-surface: #16263d;
+  --color-surface-2: #1d3250;
+  --color-border: #2a3f5f;
+  --color-text: #e8eef7;
+  --color-text-muted: #9fb3cc;
+  --color-primary: #ff9900; /* laranja AWS */
+  --color-primary-contrast: #10243b;
+  --color-danger: #e05260;
+  --color-danger-bg: #3a1b22;
+  --color-success: #3ec07a;
+  --color-focus: #4a9eff;
+
+  --radius: 8px;
+  --gap: 16px;
+  --font-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-base);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* ------------------------------------------------------------------ */
+/* Botões                                                              */
+/* ------------------------------------------------------------------ */
+.btn {
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  padding: 10px 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-primary-contrast);
+}
+
+.btn-primary:hover {
+  background-color: #ffad33;
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-ghost {
+  background-color: transparent;
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+.btn-ghost:hover {
+  background-color: var(--color-surface-2);
+}
+
+/* ------------------------------------------------------------------ */
+/* Tela de login (Req. 12.5, 12.6)                                     */
+/* ------------------------------------------------------------------ */
+.login-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--gap);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 32px;
+}
+
+.login-title {
+  margin: 0 0 8px;
+  font-size: 1.5rem;
+}
+
+.login-subtitle {
+  margin: 0 0 24px;
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+.field input,
+.field select {
+  background-color: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  color: var(--color-text);
+  padding: 10px 12px;
+  font-size: 1rem;
+}
+
+.login-feedback {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+  font-size: 0.9rem;
+}
+
+.login-lockout {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: var(--radius);
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+  font-weight: 600;
+}
+
+.login-lockout-icon {
+  font-size: 1.2rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Painel autenticado                                                  */
+/* ------------------------------------------------------------------ */
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.topbar-logo {
+  font-size: 1.4rem;
+}
+
+.topbar-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.topbar-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--gap);
+}
+
+.topbar-last-update {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+/* Navegação entre as áreas */
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 0 24px;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.nav-item {
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--color-text-muted);
+  padding: 14px 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.nav-item:hover {
+  color: var(--color-text);
+}
+
+.nav-item.is-active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+/* Faixa de status global (ex.: dados possivelmente desatualizados) */
+.global-status {
+  margin: 0;
+  padding: 10px 24px;
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+  font-size: 0.9rem;
+}
+
+/* Conteúdo e áreas */
+.content {
+  flex: 1;
+  padding: 24px;
+}
+
+.area-title {
+  margin: 0 0 var(--gap);
+  font-size: 1.3rem;
+}
+
+.area-subtitle {
+  margin: 0 0 6px;
+  font-size: 1.1rem;
+  color: var(--color-text);
+}
+
+.area-hint {
+  margin: 0 0 var(--gap);
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.area-placeholder {
+  color: var(--color-text-muted);
+  background-color: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+
+/* Utilitário de leitor de tela */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ============================================================= */
+/* Representação visual da arquitetura (Tarefa 15.1 — Req. 3.1-3.3) */
+/* ============================================================= */
+.arch {
+  margin-bottom: 28px;
+}
+
+.arch-aviso {
+  margin: 0 0 var(--gap);
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  background-color: var(--color-primary-contrast);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  font-size: 0.85rem;
+}
+
+.arch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--gap);
+}
+
+.arch-topic {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 18px;
+}
+
+.arch-topic-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.arch-topic-name {
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--color-text);
+}
+
+.arch-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background-color: var(--color-primary-contrast);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  white-space: nowrap;
+}
+
+.arch-fanout-label {
+  margin: 0 0 10px;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.arch-subs {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.arch-sub {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  background-color: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  font-size: 0.9rem;
+}
+
+.arch-sub-dest {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.arch-sub-arrow {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.arch-sub-queue {
+  color: var(--color-text-muted);
+}
+
+.arch-dlq {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  background-color: var(--color-danger-bg);
+  border: 1px solid var(--color-danger);
+}
+
+.arch-dlq-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-danger);
+}
+
+.arch-dlq-name {
+  color: var(--color-text);
+  font-size: 0.9rem;
+  font-weight: 600;
+  word-break: break-all;
+}
+
+/* ============================================================= */
+/* Cartões das quatro ações principais (Tarefa 15.1)              */
+/* ============================================================= */
+.actions {
+  margin-bottom: 28px;
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--gap);
+}
+
+.action-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  text-align: left;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 18px;
+  color: var(--color-text);
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.action-card:hover {
+  border-color: var(--color-primary);
+  background-color: var(--color-surface-2);
+}
+
+.action-icon {
+  font-size: 1.5rem;
+}
+
+.action-label {
+  letter-spacing: 0.01em;
+}
+
+/* Ponto de extensão de estatísticas/config (Tarefa 15.2) */
+.overview-stats {
+  margin-top: 8px;
+}
+
+/* ============================================================= */
+/* Estatísticas por cenário (Tarefa 15.2 — Req. 3.4-3.10, 13.6)   */
+/* ============================================================= */
+.stats-section,
+.config-section {
+  margin-top: var(--gap);
+}
+
+.stats-section-heading,
+.config-section-heading {
+  margin: 0 0 8px;
+  font-size: 1rem;
+  color: var(--color-text);
+}
+
+.stats-horario {
+  margin: 0 0 8px;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+/* Indicação visível de falha/timeout de atualização (Req. 3.9) */
+.stats-falha {
+  margin: 0 0 var(--gap);
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+  font-size: 0.88rem;
+}
+
+.stat-legenda {
+  margin: 0 0 var(--gap);
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--gap);
+}
+
+.stat-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 18px;
+}
+
+.stat-card-title {
+  margin: 0 0 12px;
+  font-size: 1.05rem;
+  color: var(--color-primary);
+}
+
+.stat-group {
+  margin-bottom: 14px;
+}
+
+.stat-group:last-child {
+  margin-bottom: 0;
+}
+
+.stat-group-title {
+  margin: 0 0 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--color-text-muted);
+}
+
+.stat-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 10px;
+  border-radius: var(--radius);
+  background-color: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  font-size: 0.9rem;
+}
+
+.stat-name {
+  color: var(--color-text-muted);
+  word-break: break-all;
+}
+
+.stat-value {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text);
+}
+
+.stat-empty {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+/* ============================================================= */
+/* Configuração: Config_Aplicada e Config_Simulacao (Req. 2.*)    */
+/* ============================================================= */
+.config-bloco {
+  margin-bottom: var(--gap);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 18px;
+}
+
+.config-bloco:last-child {
+  margin-bottom: 0;
+}
+
+.config-bloco-title {
+  margin: 0 0 4px;
+  font-size: 1rem;
+  color: var(--color-text);
+}
+
+.config-bloco-hint {
+  margin: 0 0 12px;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.config-orientacao {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  background-color: var(--color-primary-contrast);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  font-size: 0.85rem;
+}
+
+.config-item {
+  padding: 12px;
+  border-radius: var(--radius);
+  background-color: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  margin-bottom: 10px;
+}
+
+.config-item:last-child {
+  margin-bottom: 0;
+}
+
+.config-item-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.config-nome {
+  font-weight: 600;
+  color: var(--color-text);
+  word-break: break-word;
+}
+
+/* Rótulos textuais distintos Config_Aplicada x Config_Simulacao (Req. 2.6) */
+.config-rotulo {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.config-rotulo-aplicada {
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+}
+
+.config-rotulo-simulacao {
+  background-color: var(--color-primary-contrast);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+}
+
+.config-valor {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.config-sim-campo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.config-sim-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+}
+
+.config-sim-input {
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  color: var(--color-text);
+  padding: 8px 10px;
+  font-size: 0.95rem;
+  width: 120px;
+}
+
+.config-sim-aplicar {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+}
+
+.config-sim-msg {
+  margin: 8px 0 0;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+}
+
+.config-sim-msg.is-erro {
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+}
+
+.config-sim-msg.is-ok {
+  background-color: rgba(62, 192, 122, 0.12);
+  color: var(--color-success);
+  border: 1px solid var(--color-success);
+}
+
+/* ============================================================= */
+/* Atualização periódica das estatísticas (Tarefa 15.5 — Req. 13.*) */
+/* ============================================================= */
+.atualizacao-section {
+  margin-top: var(--gap);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 18px;
+}
+
+.atualizacao-heading {
+  margin: 0 0 4px;
+  font-size: 1rem;
+  color: var(--color-text);
+}
+
+.atualizacao-hint {
+  margin: 0 0 12px;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.atualizacao-campo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.atualizacao-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+}
+
+.atualizacao-input {
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  color: var(--color-text);
+  padding: 8px 10px;
+  font-size: 0.95rem;
+  width: 120px;
+}
+
+.atualizacao-aplicar {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+}
+
+.atualizacao-msg {
+  margin: 8px 0 0;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+}
+
+.atualizacao-msg.is-erro {
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+}
+
+.atualizacao-msg.is-ok {
+  background-color: rgba(62, 192, 122, 0.12);
+  color: var(--color-success);
+  border: 1px solid var(--color-success);
+}
+
+.atualizacao-status {
+  margin: 10px 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+/* Destaque quando a última tentativa periódica falhou (Req. 13.5) */
+.atualizacao-status.is-erro {
+  color: var(--color-danger);
+}
+
+/* Indicador textual Entrega_Publicada x Entrega_Confirmada (Req. 13.6) */
+.atualizacao-legenda {
+  margin: 10px 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 640px) {
+  .topbar,
+  .nav,
+  .content,
+  .global-status {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+/* ============================================================= */
+/* Disparo Standard e FIFO (Tarefa 15.3 — Req. 4.*, 5.*, 11.4, 13.6) */
+/* ============================================================= */
+.disparo-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  max-width: 560px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+.disparo-input {
+  background-color: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  color: var(--color-text);
+  padding: 10px 12px;
+  font-size: 1rem;
+}
+
+/* Campo reprovado na validação (aria-invalid): realce visível (Req. 4.7, 5.9) */
+.disparo-input[aria-invalid="true"] {
+  border-color: var(--color-danger);
+  outline-color: var(--color-danger);
+}
+
+.disparo-campo-msg {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+  font-size: 0.85rem;
+}
+
+/* Notas explicativas em pt-BR (dedup por conteúdo, ordenação FIFO) */
+.disparo-nota {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  background-color: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+}
+
+.disparo-botao {
+  align-self: flex-start;
+}
+
+/* ------------------------------------------------------------------ */
+/* Resultado do disparo                                                */
+/* ------------------------------------------------------------------ */
+.disparo-resultado {
+  margin-top: var(--gap);
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+
+/* Notificação APENAS visual "Seu pedido foi aprovado..." (Req. 4.5, 5.8) */
+.disparo-notificacao {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  background-color: rgba(62, 192, 122, 0.12);
+  color: var(--color-success);
+  border: 1px solid var(--color-success);
+  font-weight: 600;
+}
+
+.disparo-notificacao-icone {
+  font-size: 1.3rem;
+}
+
+.disparo-resumo {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 16px;
+  margin: 0;
+  padding: 16px 18px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.disparo-resumo-rotulo {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.disparo-resumo-valor {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 0.9rem;
+  word-break: break-all;
+}
+
+.disparo-legenda {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.disparo-destinos-titulo {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--color-text);
+}
+
+.disparo-destinos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.disparo-destino {
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left-width: 4px;
+}
+
+.disparo-destino.is-confirmada {
+  border-left-color: var(--color-success);
+}
+
+.disparo-destino.is-nao-confirmada {
+  border-left-color: var(--color-text-muted);
+}
+
+.disparo-destino-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.disparo-destino-titulo {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* Estado derivado por mensagem (Entrega_Confirmada / Não confirmado) — Req. 13.6 */
+.disparo-destino-estado {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 2px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+  background-color: var(--color-surface-2);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+}
+
+.disparo-destino.is-confirmada .disparo-destino-estado {
+  background-color: rgba(62, 192, 122, 0.12);
+  color: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.disparo-destino-detalhe {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  word-break: break-all;
+}
+
+/* Falha de publicação (erro original repassado) — Req. 4.8, 5.10 */
+.disparo-falha {
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+}
+
+.disparo-falha-titulo {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.disparo-falha-msg {
+  margin: 0 0 8px;
+  color: var(--color-text);
+  font-size: 0.9rem;
+}
+
+.disparo-falha-erro {
+  margin: 0;
+  font-size: 0.82rem;
+}
+
+.disparo-falha-erro code {
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 2px 6px;
+  word-break: break-all;
+}
+
+.disparo-vazio {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+/* ============================================================= */
+/* Comparação Standard x FIFO (Tarefa 15.4 — Req. 7.*)            */
+/* ============================================================= */
+.cmp-intro,
+.cmp-observacao {
+  margin: 0 0 var(--gap);
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  background-color: var(--color-primary-contrast);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.cmp-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  max-width: 560px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+.cmp-input {
+  background-color: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  color: var(--color-text);
+  padding: 10px 12px;
+  font-size: 1rem;
+}
+
+.cmp-input[aria-invalid="true"] {
+  border-color: var(--color-danger);
+  outline-color: var(--color-danger);
+}
+
+.cmp-campo-msg {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+  font-size: 0.85rem;
+}
+
+.cmp-nota {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  background-color: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+}
+
+.cmp-botao {
+  align-self: flex-start;
+}
+
+.cmp-resultado {
+  margin-top: var(--gap);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+
+/* Painel lado a lado: duas colunas (Standard e FIFO) — Req. 7.5 */
+.cmp-grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--gap);
+}
+
+.cmp-coluna {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 18px;
+}
+
+.cmp-coluna-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.cmp-coluna-tipo {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--color-primary);
+}
+
+.cmp-coluna-topico {
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+  word-break: break-all;
+}
+
+.cmp-meta {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 12px;
+  margin: 0 0 12px;
+}
+
+.cmp-meta-rotulo {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.cmp-meta-valor {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 0.85rem;
+  word-break: break-all;
+}
+
+.cmp-sub {
+  margin: 12px 0 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--color-text-muted);
+}
+
+.cmp-ordem {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cmp-ordem-item {
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  background-color: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-left-width: 4px;
+  font-size: 0.88rem;
+}
+
+.cmp-ordem-rec .cmp-ordem-item.is-confirmada {
+  border-left-color: var(--color-success);
+}
+
+.cmp-ordem-rec .cmp-ordem-item.is-nao-confirmada {
+  border-left-color: var(--color-text-muted);
+}
+
+.cmp-rec-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cmp-ordem-conteudo {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.cmp-ordem-detalhe {
+  display: block;
+  margin-top: 4px;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  word-break: break-all;
+}
+
+.cmp-ordem-detalhe code,
+.cmp-painel-detalhe code {
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  word-break: break-all;
+}
+
+/* Estado por mensagem na comparação (Entrega_Confirmada / Não confirmado) — Req. 7.9 */
+.cmp-estado,
+.dlq-estado {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 2px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+  background-color: var(--color-surface);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+}
+
+.cmp-ordem-item.is-confirmada .cmp-estado,
+.dlq-demais-item.is-confirmada .dlq-estado,
+.dlq-painel.is-confirmada .dlq-estado {
+  background-color: rgba(62, 192, 122, 0.12);
+  color: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.cmp-vazio,
+.dlq-vazio {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+/* Interrupção/falha da comparação — Req. 7.8 */
+.cmp-falha {
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+}
+
+.cmp-falha-titulo {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.cmp-falha-msg {
+  margin: 0 0 8px;
+  color: var(--color-text);
+  font-size: 0.9rem;
+}
+
+.cmp-falha-erro {
+  margin: 0;
+  font-size: 0.82rem;
+}
+
+.cmp-falha-erro code {
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 2px 6px;
+  word-break: break-all;
+}
+
+/* ============================================================= */
+/* Teste de DLQ do SNS (Tarefa 15.4 — Req. 8.*)                   */
+/* ============================================================= */
+.dlq-intro,
+.dlq-explicacao {
+  margin: 0 0 var(--gap);
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  background-color: var(--color-primary-contrast);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.dlq-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  max-width: 620px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+.dlq-select,
+.dlq-input {
+  background-color: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  color: var(--color-text);
+  padding: 10px 12px;
+  font-size: 1rem;
+}
+
+.dlq-input[aria-invalid="true"] {
+  border-color: var(--color-danger);
+  outline-color: var(--color-danger);
+}
+
+.dlq-campo-msg {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+  font-size: 0.85rem;
+}
+
+.dlq-nota {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  background-color: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+}
+
+.dlq-botao {
+  align-self: flex-start;
+}
+
+.dlq-resultado {
+  margin-top: var(--gap);
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+
+.dlq-resumo {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 16px;
+  margin: 0;
+  padding: 16px 18px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.dlq-resumo-rotulo {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.dlq-resumo-valor {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 0.9rem;
+  word-break: break-all;
+}
+
+/* Painel do resultado na DLQ (Evento_Observado / Não confirmado) — Req. 8.6, 8.7 */
+.dlq-painel {
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left-width: 4px;
+}
+
+.dlq-painel.is-confirmada {
+  border-left-color: var(--color-success);
+}
+
+.dlq-painel.is-nao-confirmada {
+  border-left-color: var(--color-text-muted);
+}
+
+.dlq-painel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.dlq-painel-titulo {
+  font-weight: 600;
+  color: var(--color-text);
+  word-break: break-all;
+}
+
+.dlq-painel-detalhe {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  word-break: break-all;
+}
+
+.dlq-sub {
+  margin: 0 0 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--color-text-muted);
+}
+
+.dlq-demais-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dlq-demais-item {
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left-width: 4px;
+}
+
+.dlq-demais-item.is-confirmada {
+  border-left-color: var(--color-success);
+}
+
+.dlq-demais-item.is-nao-confirmada {
+  border-left-color: var(--color-text-muted);
+}
+
+.dlq-demais-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.dlq-demais-dest {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.dlq-demais-detalhe {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  word-break: break-all;
+}
+
+/* Confirmação de policy restaurada / orientação de restauração manual — Req. 8.8, 8.9 */
+.dlq-policy {
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+}
+
+.dlq-policy.is-ok {
+  background-color: rgba(62, 192, 122, 0.12);
+  color: var(--color-success);
+  border: 1px solid var(--color-success);
+  font-weight: 600;
+}
+
+.dlq-policy.is-erro {
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+}
+
+.dlq-policy-titulo {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.dlq-policy-msg {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 0.88rem;
+}
+
+/* Seleção inválida / interrupção do teste de DLQ */
+.dlq-falha {
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+}
+
+.dlq-falha-titulo {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.dlq-falha-msg {
+  margin: 0 0 8px;
+  color: var(--color-text);
+  font-size: 0.9rem;
+}
+
+.dlq-falha-erro {
+  margin: 0 0 8px;
+  font-size: 0.82rem;
+}
+
+.dlq-falha-erro code {
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 2px 6px;
+  word-break: break-all;
+}
+
+.dlq-restauracao-manual {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 0.85rem;
+}

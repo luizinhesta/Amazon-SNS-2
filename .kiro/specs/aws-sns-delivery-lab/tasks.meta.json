@@ -1,0 +1,662 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1. Estruturar o projeto e os contratos base": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082627639
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082642049
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082868234
+      }
+    ],
+    "2.1 Implementar o envelope de mensagem e a extração de ID_Pedido": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082627961
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082876869
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083081920
+      }
+    ],
+    "2.2 Implementar o derivador de estado de entrega como função pura": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082630026
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082877832
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083082815
+      }
+    ],
+    "3.1 Implementar o validador de payload de disparo (Standard e FIFO)": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082630283
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082879169
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083080522
+      }
+    ],
+    "3.3 Implementar o validador de faixa genérico para Config_Simulacao e intervalo de atualização": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082630416
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082880467
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083078232
+      }
+    ],
+    "4.1 Implementar o agregador de estatísticas por cenário (Standard/FIFO)": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082630517
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082881277
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083079566
+      }
+    ],
+    "4.4 Implementar a apresentação da ordem de recebimento FIFO": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082630663
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083087567
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083322067
+      }
+    ],
+    "5. Checkpoint — lógica de domínio pura validada": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082630763
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083566283
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083569852
+      }
+    ],
+    "6.1 Implementar o SnsGateway sobre boto3": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082630863
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083333478
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083526560
+      }
+    ],
+    "7.1 Implementar o SqsLeituraGateway (somente leitura)": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082630980
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083334341
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083527880
+      }
+    ],
+    "7.3 Implementar o Verificador_Entrega (correlação por ID_Pedido e timeouts)": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082631079
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083588775
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083879427
+      }
+    ],
+    "8.1 Implementar salvar/aplicar Deny/restaurar da Access_Policy_Fila": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082631180
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083335411
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083528823
+      }
+    ],
+    "9.1 Implementar a verificação de existência e acessibilidade dos recursos": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082631290
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083589666
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083879584
+      }
+    ],
+    "10.1 Implementar o controle de autenticação com bloqueio por origem": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082631412
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083088476
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083322930
+      }
+    ],
+    "11. Checkpoint — camadas de acesso, verificação e segurança validadas": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082631518
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083904587
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083908120
+      }
+    ],
+    "12.1 Implementar os endpoints de saúde e configuração": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082631608
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083916260
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792084174432
+      }
+    ],
+    "12.2 Implementar o endpoint de estatísticas e dados de arquitetura com timeout": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082631771
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083917312
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792084499275
+      }
+    ],
+    "13.1 Implementar o disparo Standard e FIFO": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082631859
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792084506130
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792085016440
+      }
+    ],
+    "13.2 Implementar o endpoint de comparação Standard x FIFO": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082631957
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792085017278
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792085431566
+      }
+    ],
+    "13.3 Implementar o endpoint de teste de DLQ com Falha_Entrega_Controlada": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082632063
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792085430645
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792085858709
+      }
+    ],
+    "13.4 Implementar o endpoint de autenticação": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082632158
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792085857910
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792086121666
+      }
+    ],
+    "14. Checkpoint — API_Backend integrada": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082632265
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792086154321
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792086158049
+      }
+    ],
+    "15.1 Implementar a estrutura do Dashboard, a tela de login e a arquitetura visual": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082632372
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792086165241
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792086988157
+      }
+    ],
+    "15.2 Implementar a visão geral, as estatísticas e a configuração": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082632476
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792086987477
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792087778927
+      }
+    ],
+    "15.3 Implementar os disparos Standard e FIFO": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082632578
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792087779795
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792088072681
+      }
+    ],
+    "15.4 Implementar a comparação Standard x FIFO e o teste de DLQ": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082632689
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792088072062
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792088468964
+      }
+    ],
+    "15.5 Implementar a atualização periódica e os indicadores de estado": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082632840
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792088468266
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792089344792
+      }
+    ],
+    "16.1 Compor a aplicação na EC2 (API_Backend + Verificador_Entrega + Dashboard)": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082632995
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792089349992
+      }
+    ],
+    "17. Checkpoint — aplicação completa validada": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082633131
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792089685912
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792089689929
+      }
+    ],
+    "18.1 Escrever `ARQUITETURA.md`": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082633253
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792089697066
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792090134619
+      }
+    ],
+    "18.2 Escrever `IMPLANTACAO.md`": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082633383
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792089697776
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792090135506
+      }
+    ],
+    "18.3 Escrever `README.md` (artigo técnico de portfólio)": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082633503
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792089699235
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792090136451
+      }
+    ],
+    "18.4 Escrever `TESTES.md`": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082633612
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792089699797
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792090137409
+      }
+    ],
+    "19. Checkpoint final — artefatos e testes completos": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792082633739
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792090167173
+      },
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792090171453
+      }
+    ],
+    "3. Implementar as validações de entrada (disparo e faixa)": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083080713
+      }
+    ],
+    "2. Implementar o envelope de mensagem e o modelo de estados da entrega": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083082969
+      }
+    ],
+    "4. Implementar o agregador de estatísticas e a apresentação de ordem FIFO": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083322322
+      }
+    ],
+    "10. Implementar a segurança (autenticação do Dashboard e acesso)": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083323163
+      }
+    ],
+    "6. Implementar a camada de acesso ao SNS (SnsGateway)": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083526861
+      }
+    ],
+    "8. Implementar o Gerenciador_Falha_Controlada (round-trip de Access Policy)": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083528983
+      }
+    ],
+    "7. Implementar a camada de leitura não destrutiva (SqsLeituraGateway) e o Verificador_Entrega": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083879653
+      }
+    ],
+    "9. Implementar a verificação de inicialização dos recursos AWS": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792083879738
+      }
+    ],
+    "12. Implementar os endpoints de configuração, saúde e estatísticas da API_Backend (FastAPI)": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792084499526
+      }
+    ],
+    "13. Implementar os endpoints de disparo, comparação e DLQ da API_Backend": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792086122149
+      }
+    ],
+    "15. Implementar o Dashboard (HTML/CSS/JS, pt-BR)": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792089345175
+      }
+    ],
+    "18. Produzir os artefatos de documentação do projeto": [
+      {
+        "executionId": "2e81b4e0-0304-4bff-aa02-921eec0c1dbc",
+        "chatSessionId": "sess_34d03701-ce91-4efe-9ee3-71b800e81760",
+        "timestamp": 1792090137552
+      }
+    ]
+  }
+}
