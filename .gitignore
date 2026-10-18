@@ -94,12 +94,8 @@ Desktop.ini
 
 # --------------------------------------------------------------------------
 # Artefatos de ferramentas de automação/agentes (não fazem parte do código)
+# A pasta .kiro/ (specs internas, configuração do Kiro) NÃO vai para o GitHub.
 # --------------------------------------------------------------------------
 .agents/
 .worktrees/
 .kiro/
-
-# --------------------------------------------------------------------------
-# Observação: a pasta .kiro/ (specs do projeto) É versionada
-# intencionalmente e NÃO deve ser ignorada.
-# --------------------------------------------------------------------------
