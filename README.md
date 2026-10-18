@@ -1,6 +1,6 @@
-# AWS SNS Delivery Lab
+# Amazon SNS — Pub/Sub, Fan-out e Entrega Assíncrona
 
-> Um laboratório visual para entender, na prática, como o **Amazon SNS** entrega mensagens — e por que "publicar" não é o mesmo que "entregar".
+> Tópicos, assinaturas, distribuição de mensagens, Standard x FIFO e DLQ do SNS — um laboratório visual para entender, na prática, por que "publicar" não é o mesmo que "entregar".
 
 Quando a gente estuda mensageria para a certificação **AWS Solutions Architect Associate**, o SNS costuma virar uma caixa-preta: você publica em um tópico, a AWS devolve um `MessageId` e... pronto? Entregou? Este laboratório nasceu para responder essa pergunta de forma honesta, mostrando cada etapa do caminho de uma mensagem com os próprios olhos.
 

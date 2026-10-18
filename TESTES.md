@@ -1,4 +1,4 @@
-# TESTES.md — Roteiro de testes do AWS SNS Delivery Lab
+# Amazon SNS — Pub/Sub, Fan-out e Entrega Assíncrona · Testes
 
 > Roteiro de testes manuais do laboratório didático **AWS SNS Delivery Lab**, voltado ao estudo da certificação **AWS Solutions Architect Associate (SAA)**. Cada teste é executado **uma única vez, de forma manual**, pelo próprio estudante, por meio do **Dashboard** em pt-BR (título "AWS SNS Delivery Lab"). Não há loops, testes de carga, agendamentos nem publicações automáticas: cada ação roda apenas por acionamento manual do usuário, e o botão correspondente permanece desabilitado enquanto o teste está ativo.
 >

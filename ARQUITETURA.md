@@ -1,4 +1,4 @@
-# Arquitetura — AWS SNS Delivery Lab
+# Amazon SNS — Pub/Sub, Fan-out e Entrega Assíncrona · Arquitetura
 
 > Documento de arquitetura do laboratório didático de **Amazon SNS**, voltado ao estudo da certificação **AWS Solutions Architect Associate (SAA)**. Descreve apenas o que o laboratório realmente faz: a aplicação **usa** recursos AWS criados manualmente e **nunca** cria, modifica nem exclui recursos AWS — a única exceção é o ajuste temporário e reversível da `Access_Policy_Fila` no cenário de `Falha_Entrega_Controlada`.
 

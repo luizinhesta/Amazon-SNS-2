@@ -1,4 +1,4 @@
-# IMPLANTACAO.md — Implantação manual do AWS SNS Delivery Lab
+# Amazon SNS — Pub/Sub, Fan-out e Entrega Assíncrona · Implantação
 
 Este documento descreve, em Português do Brasil (pt-BR), o passo a passo para implantar manualmente, pelo **Console AWS**, toda a infraestrutura do laboratório **AWS SNS Delivery Lab** e para instalar e executar a aplicação na instância **Amazon EC2**. Nenhum recurso é criado por Infrastructure as Code (Terraform, CloudFormation, SAM, CDK): o objetivo didático é praticar a criação e a configuração de cada serviço de mensageria no Console.
 
