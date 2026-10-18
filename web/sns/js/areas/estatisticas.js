@@ -83,9 +83,16 @@ function formatarUltimaAtualizacao(iso) {
     return `Última atualização bem-sucedida: ${iso}`;
   }
   // Usa o locale pt-BR com o fuso do navegador e inclui o nome do fuso (timeZoneName).
+  // Observação: `dateStyle`/`timeStyle` NÃO podem ser combinados com `timeZoneName`
+  // (a especificação do Intl.DateTimeFormat proíbe, e navegadores como o Chrome
+  // lançam `TypeError: Invalid option`). Por isso usamos campos explícitos.
   const formatador = new Intl.DateTimeFormat("pt-BR", {
-    dateStyle: "short",
-    timeStyle: "medium",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
     timeZoneName: "short",
   });
   return `Última atualização bem-sucedida: ${formatador.format(data)}`;

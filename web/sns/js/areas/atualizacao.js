@@ -78,9 +78,17 @@ function validarIntervalo(valor) {
  * @returns {string} Horário formatado.
  */
 function formatarHorario(data) {
+  // Observação: `dateStyle`/`timeStyle` NÃO podem ser combinados com
+  // `timeZoneName` (a especificação do Intl.DateTimeFormat proíbe, e navegadores
+  // como o Chrome lançam `TypeError: Invalid option`). Por isso usamos campos
+  // explícitos (year/month/day/hour/minute/second) junto com `timeZoneName`.
   const formatador = new Intl.DateTimeFormat("pt-BR", {
-    dateStyle: "short",
-    timeStyle: "medium",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
     timeZoneName: "short",
   });
   return formatador.format(data);
