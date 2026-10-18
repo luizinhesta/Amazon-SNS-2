@@ -77,6 +77,14 @@ Cada etapa indica a **ação/comando**, **o que faz**, **por que é executada** 
 - **Por que:** é o ponto de fan-out para as três filas de destino Standard (Req. 1.1).
 - **Resultado esperado:** a página do tópico abre exibindo **Tipo: Standard** e o **ARN** no formato `arn:aws:sns:us-east-1:<account-id>:delivery-standard`. Anote esse ARN.
 
+Lista dos tópicos no Console (os dois tópicos criados nas Etapas 1 e 2):
+
+![SNS — lista de tópicos](imagens/imagem%20(21).png)
+
+Detalhe do `delivery-standard` com as três assinaturas confirmadas:
+
+![Tópico Standard e assinaturas](imagens/imagem%20(22).png)
+
 ### Etapa 2 — Criar o Topico_FIFO (com Deduplicacao_Por_Conteudo)
 
 1. Em **Amazon SNS** → **Tópicos** (*Topics*) → **Criar tópico** (*Create topic*).
@@ -88,6 +96,10 @@ Cada etapa indica a **ação/comando**, **o que faz**, **por que é executada** 
 - **O que faz:** cria o tópico FIFO com deduplicação por conteúdo habilitada.
 - **Por que:** o cenário FIFO demonstra ordenação por `MessageGroupId`; com a Deduplicacao_Por_Conteudo habilitada, o `MessageDeduplicationId` é gerado a partir do conteúdo e não precisa ser informado no disparo (Req. 1.2, 2.3, 16.1).
 - **Resultado esperado:** a página do tópico exibe **Tipo: FIFO**, **Deduplicação baseada em conteúdo: Habilitado** e o **ARN** `arn:aws:sns:us-east-1:<account-id>:delivery-fifo.fifo`. Anote esse ARN.
+
+Detalhe do `delivery-fifo.fifo` com a Deduplicacao_Por_Conteudo habilitada e as três assinaturas:
+
+![Tópico FIFO, deduplicação por conteúdo e assinaturas](imagens/imagem%20(23).png)
 
 ### Etapa 3 — Criar as seis filas de destino
 
@@ -110,6 +122,10 @@ Crie primeiro as **três filas Standard** e depois as **três filas FIFO**.
 - **O que faz:** cria as seis filas SQS que recebem o fan-out dos tópicos (três por cenário, uma por destino).
 - **Por que:** as filas de destino são o único meio de **confirmar a entrega real** das mensagens (Entrega_Confirmada), lidas pelo Verificador_Entrega (Req. 1.3, 1.4, 16.2).
 - **Resultado esperado:** as seis filas aparecem na lista do SQS. Em cada página de fila, anote o **ARN** e a **URL**.
+
+Lista das filas no Console SQS (as seis filas de destino e, após a Etapa 4, as duas DLQs — oito no total):
+
+![SQS — lista das oito filas](imagens/imagem%20(27).png)
 
 ### Etapa 4 — Criar as duas DLQs do SNS
 
@@ -155,6 +171,10 @@ Para cada fila de destino:
 - **O que faz:** autoriza a publicação na fila **apenas** pelo tópico SNS correspondente, por meio da condição `aws:SourceArn`.
 - **Por que:** sem essa policy o SNS não consegue entregar à fila; a condição por `SourceArn` garante que só o tópico certo publique, rejeitando outras origens (Req. 12.8, 16.3). Essa também é a policy que o cenário de Falha de Entrega Controlada ajusta temporariamente com um statement `Deny` e restaura ao final.
 - **Resultado esperado:** a aba **Política de acesso** passa a exibir a declaração `Allow` para `sns.amazonaws.com` com a condição por `SourceArn`.
+
+Exemplo da Access_Policy_Fila de uma fila de destino autorizando o SNS a publicar:
+
+![Access_Policy_Fila de uma fila de destino](imagens/imagem%20(33).png)
 
 ### Etapa 6 — Autorizar o SNS a publicar nas DLQs
 
@@ -280,6 +300,14 @@ Para cada assinatura:
 - **Por que:** a aplicação se autentica na AWS exclusivamente por essa role (credenciais temporárias via IMDSv2), sem Access Keys fixas, e com acesso restrito aos recursos do laboratório (Req. 12.1, 12.2, 12.3, 16.6). A policy **não** concede `sqs:DeleteMessage` porque a leitura é sempre não destrutiva.
 - **Resultado esperado:** a função `sns-delivery-lab-ec2-role` aparece em **IAM** → **Funções** (*Roles*) com as duas políticas anexadas.
 
+A IAM_Role_EC2 com as duas políticas anexadas (`sns-delivery-lab-policy` + `AmazonSSMManagedInstanceCore`):
+
+![IAM Role da EC2](imagens/imagem%20(24).png)
+
+Permissões de privilégio mínimo da `sns-delivery-lab-policy`:
+
+![Política IAM de privilégio mínimo](imagens/imagem%20(25).png)
+
 ### Etapa 9 — Criar os Grupos de Segurança (porta 22 fechada)
 
 1. Abra **EC2** → **Grupos de segurança** (*Security Groups*) → **Criar grupo de segurança** (*Create security group*), na mesma VPC em que a EC2 será criada.
@@ -293,6 +321,10 @@ Para cada assinatura:
 - **O que faz:** restringe o acesso de entrada à porta da aplicação (8000) e mantém a porta 22 (SSH) fechada.
 - **Por que:** o acesso administrativo à EC2 é feito exclusivamente via Session Manager, dispensando SSH; expor a porta 22 seria desnecessário e inseguro (Req. 12.7, 15.3, 16.7).
 - **Resultado esperado:** o Grupo de Segurança lista somente a regra de entrada da porta 8000 restrita; nenhuma regra para a porta 22.
+
+O Security Group `sns-delivery-lab-sg` com a regra de entrada apenas na porta 8000, restrita à origem autorizada (sem regra para a porta 22):
+
+![Security Group com a porta 8000 restrita](imagens/imagem%20(26).png)
 
 ### Etapa 10 — Criar a instância EC2 Linux com Session Manager
 
@@ -308,6 +340,10 @@ Para cada assinatura:
 - **O que faz:** cria a instância Linux que hospeda a API_Backend, o Verificador_Entrega e o Dashboard, já com a Função do IAM anexada e sem par de chaves SSH.
 - **Por que:** a aplicação roda inteiramente na EC2 e usa a Função do IAM anexada para autenticar no SNS/SQS; a administração ocorre via Session Manager, sem SSH (Req. 15.3, 16.7).
 - **Resultado esperado:** a instância `sns-delivery-lab` fica com **Estado da instância: Executando** (*Running*). Anote o **ID da instância** (*Instance ID*, `i-...`). Após alguns minutos, em **EC2** → selecione a instância → **Conectar** (*Connect*) → aba **Session Manager**, o botão **Conectar** (*Connect*) fica habilitado, confirmando que o agente SSM registrou a instância.
+
+A instância `sns-delivery-lab` em execução, com a IAM Role anexada e IMDSv2 obrigatório:
+
+![Instância EC2 em execução](imagens/imagem%20(31).png)
 
 ### Etapa 11 — Instalar e executar a aplicação na EC2
 
@@ -376,6 +412,14 @@ uvicorn app.main_sns:app --host 0.0.0.0 --port 8000
 6. Acessar o Dashboard a partir de uma origem autorizada: abra `http://<IP_PUBLICO_DA_EC2>:8000/` no navegador e faça login com o usuário/senha definidos.
 
 - **Resultado esperado:** o Dashboard "AWS SNS Delivery Lab" carrega em pt-BR, exibindo a arquitetura (dois tópicos, seis assinaturas, seis filas, duas DLQs) e as quatro ações principais.
+
+O Dashboard servido após a verificação de inicialização bem-sucedida, com a visão geral e as estatísticas por cenário:
+
+![Dashboard — visão geral e estatísticas](imagens/imagem%20(15).png)
+
+Os parâmetros de Config_Aplicada e Config_Simulacao exibidos no Dashboard:
+
+![Dashboard — Config_Simulacao e Config_Aplicada](imagens/imagem%20(36).png)
 
 > **Execução permanente (recomendado).** Rodar o `uvicorn` manualmente com `nohup ... &` funciona para um teste rápido, mas tem um risco real: nada impede subir um segundo processo por cima do primeiro, e os dois disputam a porta 8000 (erro `address already in use`), deixando a aplicação em estado inconsistente. Para produção, use o serviço `systemd` descrito na **Etapa 12**, que garante um único processo, reinício automático em falha e start no boot.
 
@@ -454,6 +498,10 @@ Por padrão, o IP público de uma instância EC2 **muda a cada parada/início** 
 - **Por que:** no cenário de liga/desliga, evita ter de descobrir o novo IP a cada início e mantém uma URL de acesso estável (Req. 15.x de operação do laboratório).
 - **Resultado esperado:** o Dashboard responde no mesmo IP após cada reinício; `GET /api/saude` continua retornando `"saudavel":true`.
 
+O Elastic IP `sns-delivery-lab-eip` associado à instância (endereço fixo para o cenário de liga/desliga):
+
+![Elastic IP associado à instância](imagens/imagem%20(30).png)
+
 > **Custo do Elastic IP.** A AWS cobra uma pequena taxa horária por endereço IPv4 público (inclusive Elastic IP) e, em especial, por Elastic IP **alocado mas não associado** a uma instância em execução. Enquanto associado à sua instância, o custo é de centavos por dia. Ao encerrar o laboratório, **libere o Elastic IP** (ver a Seção 7) para não pagar por um IP ocioso.
 
 ---
@@ -476,56 +524,6 @@ Confirme que cada recurso foi criado com os nomes e os valores de Config_Aplicad
 | 10 | Verificação automática | Dashboard em `http://<IP>:8000/` ou `GET /api/saude` | Dashboard carrega; `/api/saude` indica todos os recursos acessíveis |
 
 Se o endpoint `GET /api/saude` ou o Dashboard apontar um recurso indisponível, ele é identificado por **nome e tipo** em pt-BR — use essa indicação para localizar a etapa correspondente e corrigir.
-
-### Imagens da implantação (Console AWS e Dashboard)
-
-As capturas abaixo mostram os recursos criados no Console AWS e o resultado final no Dashboard, na ordem das etapas.
-
-**SNS — tópicos (Etapas 1 e 2).** Os dois tópicos `delivery-standard` (Standard) e `delivery-fifo.fifo` (FIFO):
-
-![SNS — lista de tópicos](imagens/imagem%20(21).png)
-
-Detalhe do `delivery-standard` com as três assinaturas confirmadas:
-
-![Tópico Standard e assinaturas](imagens/imagem%20(22).png)
-
-Detalhe do `delivery-fifo.fifo` com a Deduplicacao_Por_Conteudo habilitada e as três assinaturas:
-
-![Tópico FIFO, deduplicação por conteúdo e assinaturas](imagens/imagem%20(23).png)
-
-**SQS — filas (Etapas 3 e 4).** As seis filas de destino e as duas DLQs:
-
-![SQS — lista das oito filas](imagens/imagem%20(27).png)
-
-**Access_Policy_Fila (Etapas 5 e 6).** A política de acesso de uma fila de destino autorizando o SNS a publicar:
-
-![Access_Policy_Fila de uma fila de destino](imagens/imagem%20(33).png)
-
-**IAM (Etapa 8).** A IAM_Role_EC2 com as duas políticas anexadas:
-
-![IAM Role da EC2](imagens/imagem%20(24).png)
-
-Permissões de privilégio mínimo da `sns-delivery-lab-policy`:
-
-![Política IAM de privilégio mínimo](imagens/imagem%20(25).png)
-
-**Grupo de Segurança (Etapa 9).** Regra de entrada apenas na porta 8000, restrita à origem autorizada (porta 22 sem regra):
-
-![Security Group com a porta 8000 restrita](imagens/imagem%20(26).png)
-
-**EC2 (Etapa 10).** A instância do laboratório em execução, com a IAM Role anexada e IMDSv2 obrigatório:
-
-![Instância EC2 em execução](imagens/imagem%20(31).png)
-
-**Elastic IP (Etapa 13).** O endereço fixo associado à instância, para o cenário de liga/desliga:
-
-![Elastic IP associado à instância](imagens/imagem%20(30).png)
-
-**Dashboard final.** Após a verificação de inicialização bem-sucedida, o Dashboard é servido com a visão geral, as estatísticas por cenário e os parâmetros de Config_Aplicada e Config_Simulacao:
-
-![Dashboard — visão geral e estatísticas](imagens/imagem%20(15).png)
-
-![Dashboard — Config_Simulacao e Config_Aplicada](imagens/imagem%20(36).png)
 
 ---
 
