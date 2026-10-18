@@ -175,23 +175,55 @@ def _id_pedido_dos_atributos(mensagem: dict[str, Any]) -> str | None:
     return _valor_de_atributo(atributo_id)
 
 
+def _id_pedido_de_payload(payload: Any) -> str | None:
+    """Extrai o ID_Pedido de um dicionário de payload de aplicação já desserializado."""
+    if not isinstance(payload, dict):
+        return None
+    valor = payload.get(CAMPO_ID_PEDIDO)
+    if isinstance(valor, str) and valor != "":
+        return valor
+    return None
+
+
 def _id_pedido_do_corpo(mensagem: dict[str, Any]) -> str | None:
-    """Tenta extrair o ID_Pedido do campo ``Message`` (JSON) do envelope."""
+    """Tenta extrair o ID_Pedido do campo ``Message`` (JSON) do envelope.
+
+    Trata dois formatos:
+
+    1. **Payload direto:** ``Message`` é o JSON do payload de aplicação, com
+       ``id_pedido`` no nível raiz.
+    2. **Envelope SNS (sem raw delivery):** ``Message`` é o envelope do SNS
+       (``{"Type":"Notification","Message":"{...payload...}", ...}``), onde o
+       payload de aplicação está **aninhado** como string JSON no campo
+       ``Message`` interno. É o formato real recebido na fila de destino quando a
+       assinatura não usa *raw message delivery* (o caso do laboratório).
+    """
     corpo = mensagem.get(CHAVE_MESSAGE)
     if not isinstance(corpo, str) or corpo == "":
         return None
 
     try:
-        payload = json.loads(corpo)
+        desserializado = json.loads(corpo)
     except (json.JSONDecodeError, ValueError):
         return None
 
-    if not isinstance(payload, dict):
+    if not isinstance(desserializado, dict):
         return None
 
-    valor = payload.get(CAMPO_ID_PEDIDO)
-    if isinstance(valor, str) and valor != "":
-        return valor
+    # Caso 1: o próprio corpo já é o payload de aplicação.
+    direto = _id_pedido_de_payload(desserializado)
+    if direto is not None:
+        return direto
+
+    # Caso 2: envelope SNS — o payload está aninhado na string ``Message``.
+    interno = desserializado.get(CHAVE_MESSAGE)
+    if isinstance(interno, str) and interno != "":
+        try:
+            payload_interno = json.loads(interno)
+        except (json.JSONDecodeError, ValueError):
+            return None
+        return _id_pedido_de_payload(payload_interno)
+
     return None
 
 
