@@ -1,0 +1,73 @@
+# Unit systemd do AWS SNS Delivery Lab (execução gerenciada na EC2).
+#
+# Objetivo: rodar a aplicação (uvicorn) como um serviço do sistema, em vez de
+# `nohup ... &` manual. Isso garante:
+#   - um ÚNICO processo dono da porta 8000 (acaba com o erro "address already in
+#     use" por dois uvicorn simultâneos);
+#   - reinício automático em caso de falha (Restart=on-failure);
+#   - start automático no boot da instância (WantedBy=multi-user.target);
+#   - logs centralizados no journald (journalctl -u sns-delivery-lab).
+#
+# INSTALAÇÃO NA EC2 (via Session Manager):
+#   1) Copie este arquivo para /etc/systemd/system/sns-delivery-lab.service
+#        sudo cp /opt/amazon-sns2/deploy/sns-delivery-lab.service \
+#          /etc/systemd/system/sns-delivery-lab.service
+#   2) Ajuste os valores de Environment= abaixo (usuario/senha/origens/instance id).
+#   3) Garanta que nenhum uvicorn manual esteja rodando:
+#        pkill -f 'uvicorn app.main_sns:app' ; sleep 2
+#   4) Recarregue o systemd e habilite o serviço:
+#        sudo systemctl daemon-reload
+#        sudo systemctl enable --now sns-delivery-lab
+#   5) Verifique:
+#        systemctl status sns-delivery-lab
+#        journalctl -u sns-delivery-lab -n 50 --no-pager
+#        curl -i http://localhost:8000/api/saude
+#
+# Observações:
+#   - Credenciais da AWS NÃO ficam aqui: a autenticação é pela IAM_Role_EC2
+#     (Req. 12.1, 12.2). Só as variáveis do Dashboard e os identificadores do
+#     laboratório são definidos em Environment=.
+#   - O usuário/grupo e os caminhos abaixo assumem a implantação padrão em
+#     /opt/amazon-sns2 com o venv em .venv. Ajuste se a sua instalação diferir.
+
+[Unit]
+Description=AWS SNS Delivery Lab (API_Backend + Dashboard)
+# Só tenta subir depois que a rede estiver disponível (a verificação de
+# inicialização consulta SNS/SQS na AWS logo no startup).
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+
+# Usuário/grupo que executam a aplicação. Na Amazon Linux via Session Manager, o
+# dono dos arquivos costuma ser ssm-user (confirme com: stat -c '%U' /opt/amazon-sns2).
+User=ssm-user
+Group=ssm-user
+
+WorkingDirectory=/opt/amazon-sns2
+
+# Variáveis de ambiente lidas por app/main_sns.py. AJUSTE os valores reais.
+# Em vez de deixar segredos neste arquivo versionado, prefira um arquivo separado
+# fora do git (veja EnvironmentFile mais abaixo) e remova as linhas Environment=
+# com senha.
+Environment=DASHBOARD_SNS_USUARIO=admin
+Environment=DASHBOARD_SNS_SENHA=defina-uma-senha-forte
+Environment=DASHBOARD_SNS_ORIGENS_AUTORIZADAS=SEU_IP_AQUI
+Environment=SNS_LAB_IAM_ROLE=sns-delivery-lab-ec2-role
+Environment=SNS_LAB_EC2_INSTANCE_ID=SEU_INSTANCE_ID_AQUI
+
+# ALTERNATIVA RECOMENDADA para segredos (NÃO versionar): crie o arquivo
+# /etc/sns-delivery-lab.env (chmod 600) com linhas CHAVE=valor e descomente:
+# EnvironmentFile=/etc/sns-delivery-lab.env
+
+# Comando de execução: o uvicorn do venv, servindo na porta 8000 em todas as
+# interfaces. Um único worker é suficiente para o laboratório.
+ExecStart=/opt/amazon-sns2/.venv/bin/uvicorn app.main_sns:app --host 0.0.0.0 --port 8000
+
+# Reinício automático em falha, com um pequeno intervalo entre tentativas.
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
