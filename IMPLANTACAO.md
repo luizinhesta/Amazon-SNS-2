@@ -23,6 +23,7 @@ Todos os recursos ficam na região **us-east-1 (Norte da Virgínia)**. A autenti
 
 > O sufixo `.fifo` é **obrigatório** nos recursos FIFO (tópico e filas). Sem ele, o Console não permite habilitar o tipo FIFO.
 
+![Descrição da imagem](<imagens/imagem%20(45).png>)
 ## 2. Pré-requisitos
 
 - Conta AWS com acesso ao Console na região **us-east-1**.

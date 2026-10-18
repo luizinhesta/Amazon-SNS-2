@@ -1,6 +1,6 @@
 # Amazon SNS — Pub/Sub, Fan-out e Entrega Assíncrona · Arquitetura
 
-> Documento de arquitetura do laboratório didático de **Amazon SNS**, voltado ao estudo da certificação **AWS Solutions Architect Associate (SAA)**. Descreve apenas o que o laboratório realmente faz: a aplicação **usa** recursos AWS criados manualmente e **nunca** cria, modifica nem exclui recursos AWS — a única exceção é o ajuste temporário e reversível da `Access_Policy_Fila` no cenário de `Falha_Entrega_Controlada`.
+> Documento de arquitetura do laboratório prático de **Amazon SNS**. Descreve apenas o que o laboratório realmente faz: a aplicação **usa** recursos AWS criados manualmente e **nunca** cria, modifica nem exclui recursos AWS — a única exceção é o ajuste temporário e reversível da `Access_Policy_Fila` no cenário de `Falha_Entrega_Controlada`.
 
 ## Visão geral
 
@@ -46,7 +46,10 @@ Decisões de arquitetura relevantes:
 
 > As seis `Assinatura_SNS` (três do `Topico_Standard` para as filas Standard e três do `Topico_FIFO` para as filas FIFO) são o elo do fan-out. Cada assinatura tem uma `Redrive_Policy_SNS` apontando para a DLQ compatível com o seu tipo (Standard → `delivery-sns-dlq-standard`; FIFO → `delivery-sns-dlq.fifo`). A `Access_Policy_Fila` de cada fila de destino autoriza apenas o tópico SNS correspondente a publicar (principal `sns.amazonaws.com`, condição por `SourceArn` do tópico).
 
-## Diagrama de arquitetura (ícones oficiais AWS)
+![Descrição da imagem](<imagens/imagem%20(45).png>)
+
+## Diagrama de arquitetura 
+![Descrição da imagem](<imagens/imagem%20(44).png>)
 
 O diagrama abaixo representa a arquitetura usando a convenção visual dos **AWS Architecture Icons** oficiais. Cada caixa referencia o ícone oficial do serviço correspondente (catálogo [AWS Architecture Icons](https://aws.amazon.com/architecture/icons/)). As classes de cor seguem a paleta oficial por categoria de serviço (laranja para Compute, rosa/magenta para App Integration, vermelho para Security, cinza para Management).
 

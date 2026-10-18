@@ -1,8 +1,10 @@
 # Amazon SNS — Pub/Sub, Fan-out e Entrega Assíncrona
-
+![Descrição da imagem](<imagens/imagem%20(43).png>)
 > Tópicos, assinaturas, distribuição de mensagens, Standard x FIFO e DLQ do SNS — um laboratório visual para entender, na prática, por que "publicar" não é o mesmo que "entregar".
 
-Quando a gente estuda mensageria para a certificação **AWS Solutions Architect Associate**, o SNS costuma virar uma caixa-preta: você publica em um tópico, a AWS devolve um `MessageId` e... pronto? Entregou? Este laboratório nasceu para responder essa pergunta de forma honesta, mostrando cada etapa do caminho de uma mensagem com os próprios olhos.
+Quando a gente estuda mensageria na AWS, o SNS costuma virar uma caixa-preta: você publica em um tópico, a AWS devolve um `MessageId` e... pronto? Entregou? Este laboratório nasceu para responder essa pergunta de forma honesta, mostrando cada etapa do caminho de uma mensagem com os próprios olhos.
+
+![Descrição da imagem](<imagens/imagem%20(45).png>)
 
 O cenário é um **delivery de comida**: quando um pedido é aprovado, o SNS avisa três sistemas ao mesmo tempo — a confirmação da compra, a cozinha e o motoboy. Uma publicação, três entregas. É o padrão **fan-out**, e é aqui que o SNS brilha.
 
@@ -20,6 +22,8 @@ A aplicação nunca diz "entregue" só porque o SNS respondeu. Ela vai até a fi
 ## O que dá para ver no laboratório
 
 O Dashboard em português tem quatro ações, cada uma ensinando um conceito:
+
+![Descrição da imagem](<imagens/imagem%20(46).png>)
 
 **Disparar SNS Standard e FIFO** — publica uma mensagem e mostra ela chegando nos três destinos. No FIFO, você informa um `MessageGroupId`; no Standard, nem precisa. Repare que o resultado traz o `MessageId` de cada destino, confirmado por leitura real.
 
@@ -44,6 +48,7 @@ Tudo roda em uma única instância **EC2 Linux** na região `us-east-1`:
 Uma regra de ouro: a aplicação **usa** os recursos AWS, mas **nunca cria, altera ou apaga** nada — a única exceção é aquele ajuste temporário e reversível no teste de DLQ. Todos os recursos (tópicos, filas, assinaturas, IAM, EC2) são criados manualmente no Console, de propósito, para praticar.
 
 O SNS é a estrela; o SQS entra **só como destino** do fan-out, servindo para confirmar a entrega real. Nenhuma funcionalidade de SQS é ensinada aqui.
+![Descrição da imagem](<imagens/imagem%20(44).png>)
 
 ## O que eu aprendi
 
