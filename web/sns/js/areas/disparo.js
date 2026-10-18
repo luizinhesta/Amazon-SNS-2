@@ -256,7 +256,13 @@ function desenharFalhaPublicacao(resposta, alvo) {
  */
 export function montarFormularioDisparo(opcoes) {
   const { ctx, pontoExtensao, ehFifo, chaveTeste, disparar } = opcoes;
-  const alvo = ctx.container.querySelector(`[data-extension-point="${pontoExtensao}"]`);
+  // O container pode SER o próprio ponto de extensão (o <section> da área tem o
+  // atributo data-extension-point) ou contê-lo como descendente. querySelector só
+  // encontra descendentes, então checamos primeiro o próprio elemento.
+  const alvo =
+    ctx.container.matches(`[data-extension-point="${pontoExtensao}"]`)
+      ? ctx.container
+      : ctx.container.querySelector(`[data-extension-point="${pontoExtensao}"]`);
   if (!alvo) {
     return () => {};
   }

@@ -333,7 +333,10 @@ function desenharResultado(resposta, alvo) {
  * @param {{ api: object, container: HTMLElement }} ctx Contexto compartilhado.
  */
 export function init(ctx) {
-  const alvo = ctx.container.querySelector('[data-extension-point="dlq"]');
+  // O container pode SER o próprio ponto de extensão ou contê-lo como descendente.
+  const alvo = ctx.container.matches('[data-extension-point="dlq"]')
+    ? ctx.container
+    : ctx.container.querySelector('[data-extension-point="dlq"]');
   if (!alvo) {
     return;
   }
