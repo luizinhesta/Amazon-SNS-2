@@ -2,21 +2,6 @@
 
 > Documento de arquitetura do laboratório didático de **Amazon SNS**, voltado ao estudo da certificação **AWS Solutions Architect Associate (SAA)**. Descreve apenas o que o laboratório realmente faz: a aplicação **usa** recursos AWS criados manualmente e **nunca** cria, modifica nem exclui recursos AWS — a única exceção é o ajuste temporário e reversível da `Access_Policy_Fila` no cenário de `Falha_Entrega_Controlada`.
 
-## Sumário
-
-- [Visão geral](#visão-geral)
-- [Serviços AWS utilizados e suas funções](#serviços-aws-utilizados-e-suas-funções)
-- [Diagrama de arquitetura (ícones oficiais AWS)](#diagrama-de-arquitetura-ícones-oficiais-aws)
-- [Diagrama único de todos os fluxos (Mermaid)](#diagrama-único-de-todos-os-fluxos-mermaid)
-- [Fluxos detalhados](#fluxos-detalhados)
-  - [Fluxo fan-out Standard](#fluxo-fan-out-standard)
-  - [Fluxo fan-out FIFO](#fluxo-fan-out-fifo)
-  - [Fluxo de falha de entrega controlada e DLQ do SNS](#fluxo-de-falha-de-entrega-controlada-e-dlq-do-sns)
-- [Integração com as filas de destino](#integração-com-as-filas-de-destino)
-- [Integração com o Dashboard](#integração-com-o-dashboard)
-- [Permissões IAM (privilégios mínimos)](#permissões-iam-privilégios-mínimos)
-- [Topologia de rede e implantação](#topologia-de-rede-e-implantação)
-
 ## Visão geral
 
 O **AWS SNS Delivery Lab** é uma aplicação web em português do Brasil (pt-BR) que demonstra, de forma visual, o ciclo de vida completo das mensagens publicadas pelo **Amazon SNS**: publicação em tópicos, distribuição **fan-out** para múltiplas assinaturas, ordenação de mensagens (Standard vs FIFO), confirmação de entrega real nas filas de destino, falha de entrega controlada e encaminhamento para a **Dead-Letter Queue (DLQ) do SNS**.

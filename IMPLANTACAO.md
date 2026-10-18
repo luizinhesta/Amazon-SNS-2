@@ -6,29 +6,6 @@ Todos os recursos ficam na região **us-east-1 (Norte da Virgínia)**. A autenti
 
 > **Convenção de nomes.** Os nomes abaixo seguem o Glossário do projeto e são exatamente os nomes reais exibidos no Console AWS. Mantêm-se em inglês apenas termos técnicos, nomes de serviços AWS, nomes de parâmetros, nomes de variáveis e comandos.
 
-## Sumário
-
-- [1. Recursos que serão criados](#1-recursos-que-serão-criados)
-- [2. Pré-requisitos](#2-pré-requisitos)
-- [3. Passo a passo de implantação](#3-passo-a-passo-de-implantação)
-  - [Etapa 1 — Criar o Topico_Standard](#etapa-1--criar-o-topico_standard)
-  - [Etapa 2 — Criar o Topico_FIFO (com Deduplicacao_Por_Conteudo)](#etapa-2--criar-o-topico_fifo-com-deduplicacao_por_conteudo)
-  - [Etapa 3 — Criar as seis filas de destino](#etapa-3--criar-as-seis-filas-de-destino)
-  - [Etapa 4 — Criar as duas DLQs do SNS](#etapa-4--criar-as-duas-dlqs-do-sns)
-  - [Etapa 5 — Configurar a Access_Policy_Fila de cada fila de destino](#etapa-5--configurar-a-access_policy_fila-de-cada-fila-de-destino)
-  - [Etapa 6 — Autorizar o SNS a publicar nas DLQs](#etapa-6--autorizar-o-sns-a-publicar-nas-dlqs)
-  - [Etapa 7 — Criar as seis assinaturas com Redrive_Policy_SNS](#etapa-7--criar-as-seis-assinaturas-com-redrive_policy_sns)
-  - [Etapa 8 — Criar a IAM_Role_EC2 (privilégios mínimos, sem Access Keys)](#etapa-8--criar-a-iam_role_ec2-privilégios-mínimos-sem-access-keys)
-  - [Etapa 9 — Criar os Grupos de Segurança (porta 22 fechada)](#etapa-9--criar-os-grupos-de-segurança-porta-22-fechada)
-  - [Etapa 10 — Criar a instância EC2 Linux com Session Manager](#etapa-10--criar-a-instância-ec2-linux-com-session-manager)
-  - [Etapa 11 — Instalar e executar a aplicação na EC2](#etapa-11--instalar-e-executar-a-aplicação-na-ec2)
-- [4. Verificação pós-implantação](#4-verificação-pós-implantação)
-- [5. Tratamento de falhas de etapa](#5-tratamento-de-falhas-de-etapa)
-- [6. Custo mensal estimado em USD](#6-custo-mensal-estimado-em-usd)
-- [7. Exclusão dos recursos ao final (ordem de dependência)](#7-exclusão-dos-recursos-ao-final-ordem-de-dependência)
-
----
-
 ## 1. Recursos que serão criados
 
 | Recurso (Glossário) | Nome real no Console AWS | Tipo |
