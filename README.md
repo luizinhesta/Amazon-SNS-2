@@ -68,6 +68,10 @@ Na inicialização, a aplicação executa a verificação de recursos: confirma 
 
 O Verificador_Entrega confirma as entregas lendo as filas de destino de forma **não destrutiva** — usa `ReceiveMessage` com Long Polling, **nunca** chama `DeleteMessage` e correlaciona cada mensagem pelo ID_Pedido extraído do envelope SNS, preservando mensagens de outros testes ou usuários. Enquanto aguarda, repete tentativas apenas até o Timeout_Verificacao (sem registrar erro em retornos vazios); ao atingir o limite sem confirmar, o estado exibido é **"Não confirmado"**, nunca "entregue". O Dashboard atualiza as estatísticas periodicamente (intervalo configurável de 5 a 300 s, padrão 10 s), exibe o horário da última atualização bem-sucedida e, se uma atualização falhar, preserva os últimos dados válidos com indicação visível. Exposto à internet, o Dashboard exige login e bloqueia a origem por 300 segundos após 5 tentativas inválidas consecutivas.
 
+O Dashboard em pt-BR, com a visão geral da arquitetura, as quatro ações principais e as estatísticas por cenário:
+
+![Dashboard do AWS SNS Delivery Lab — visão geral](imagens/imagem%20(5).png)
+
 ## 11. Experimentos realizados
 
 O laboratório oferece seis experimentos controlados, todos de acionamento manual e sem loops ou testes de carga:

@@ -296,4 +296,22 @@ graph LR
 
 A arquitetura **não** usa `NAT Gateway` nem `Elastic Load Balancer` (salvo justificativa técnica documentada), para controle de custos. A administração da EC2 ocorre apenas via **Session Manager**, com a porta 22 (SSH) sem regra de entrada liberada no Security Group. Todos os recursos AWS são criados **manualmente** no Console AWS (sem IaC); a aplicação apenas verifica e usa os recursos existentes, com a única exceção do ajuste temporário e reversível da `Access_Policy_Fila` no cenário de `Falha_Entrega_Controlada`. O passo a passo numerado de criação, verificação e exclusão dos recursos está em `IMPLANTACAO.md`.
 
+### Imagens da arquitetura implantada
+
+Representação visual da arquitetura no Dashboard (dois tópicos com tipo, assinaturas em fan-out e as DLQs):
+
+![Arquitetura do laboratório no Dashboard](imagens/imagem%20(15).png)
+
+Rede: a VPC do laboratório com sub-redes, tabela de rotas e Internet Gateway:
+
+![VPC do laboratório no Console AWS](imagens/imagem%20(29).png)
+
+Compute: a instância EC2 que hospeda a API_Backend, o Verificador_Entrega e o Dashboard (com IP elástico e IMDSv2):
+
+![Instância EC2 do laboratório](imagens/imagem%20(31).png)
+
+Segurança: a IAM_Role_EC2 de privilégio mínimo anexada à instância (sem Access Keys):
+
+![IAM Role da EC2 no Console AWS](imagens/imagem%20(24).png)
+
 Em produção, o processo da aplicação roda como um serviço **systemd** (`deploy/sns-delivery-lab.service`), e não com um `uvicorn` avulso: isso garante um único processo dono da porta da aplicação (evitando conflitos de `address already in use`), reinício automático em falha e start no boot da instância. Os parâmetros sensíveis (usuário/senha do Dashboard e identificadores do laboratório) vêm de um `EnvironmentFile` fora do repositório; nenhuma Access Key da AWS é definida ali, pois a autenticação permanece pela `IAM_Role_EC2`. O passo a passo de instalação do serviço está na Etapa 12 do `IMPLANTACAO.md`.

@@ -125,6 +125,14 @@ _(a preencher durante a execução)_
 ### Critério de aprovação
 O teste é aprovado se **1 mensagem** for publicada no Topico_FIFO e a mesma mensagem tiver **Entrega_Confirmada nas três filas de destino FIFO** (Destino_1, Destino_2 e Destino_3), correlacionada pelo ID_Pedido.
 
+### Imagens
+
+Disparo FIFO com os três destinos em Entrega_Confirmada:
+
+![Disparo SNS FIFO — formulário e resultado](imagens/imagem%20(2).png)
+
+![Disparo SNS FIFO — detalhe dos destinos confirmados](imagens/imagem%20(1).png)
+
 ---
 
 ## Teste 3 — Ordenação FIFO (≥ 3 mensagens no mesmo MessageGroupId)
@@ -209,6 +217,12 @@ _(a preencher durante a execução)_
 ### Critério de aprovação
 O teste é aprovado se o Dashboard apresentar **lado a lado** a ordem de publicação e a ordem de recebimento dos dois cenários (Standard e FIFO).
 
+### Imagens
+
+Painel de comparação Standard x FIFO lado a lado (ordem de publicação e de recebimento):
+
+![Comparação Standard x FIFO lado a lado](imagens/imagem%20(4).png)
+
 ---
 
 ## Teste 5 — DLQ do SNS com Falha_Entrega_Controlada e restauração da policy
@@ -253,6 +267,24 @@ _(a preencher durante a execução)_
 ### Critério de aprovação
 O teste é aprovado se, após a Falha_Entrega_Controlada de uma assinatura, uma mensagem for confirmada (**Entrega_Confirmada**) na **DLQ compatível** e a **Access_Policy_Fila original for restaurada**.
 
+### Imagens
+
+Seleção da Assinatura_SNS (cenário e destino) para o teste de DLQ:
+
+![Teste de DLQ — seleção da assinatura](imagens/imagem%20(8).png)
+
+Resultado do teste de DLQ no cenário Standard (mensagem confirmada na DLQ como Evento_Observado e Access_Policy_Fila restaurada):
+
+![Teste de DLQ — resultado Standard](imagens/imagem%20(9).png)
+
+Resultado do teste de DLQ no cenário FIFO:
+
+![Teste de DLQ — resultado FIFO](imagens/imagem%20(12).png)
+
+Prova no Console AWS: a mensagem de teste presente na DLQ do SNS (envelope SNS correlacionado pelo ID_Pedido):
+
+![Mensagem na DLQ do SNS no Console AWS](imagens/imagem%20(11).png)
+
 ---
 
 ## Teste 6 — Confirmação de entrega real (Entrega_Publicada x Entrega_Confirmada)
@@ -292,6 +324,12 @@ _(a preencher durante a execução)_
 
 ### Critério de aprovação
 O teste é aprovado se o Dashboard distinguir **explicitamente** os estados **Entrega_Publicada** e **Entrega_Confirmada** para uma mesma mensagem, por meio de indicadores textuais distintos.
+
+### Imagens
+
+Estatísticas por cenário no Dashboard, com os contadores de Entrega_Publicada (publicadas por tópico) e Entrega_Confirmada (por fila de destino):
+
+![Estatísticas por cenário — Entrega_Publicada x Entrega_Confirmada](imagens/imagem%20(42).png)
 
 ---
 

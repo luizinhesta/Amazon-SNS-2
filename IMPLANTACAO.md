@@ -477,6 +477,56 @@ Confirme que cada recurso foi criado com os nomes e os valores de Config_Aplicad
 
 Se o endpoint `GET /api/saude` ou o Dashboard apontar um recurso indisponível, ele é identificado por **nome e tipo** em pt-BR — use essa indicação para localizar a etapa correspondente e corrigir.
 
+### Imagens da implantação (Console AWS e Dashboard)
+
+As capturas abaixo mostram os recursos criados no Console AWS e o resultado final no Dashboard, na ordem das etapas.
+
+**SNS — tópicos (Etapas 1 e 2).** Os dois tópicos `delivery-standard` (Standard) e `delivery-fifo.fifo` (FIFO):
+
+![SNS — lista de tópicos](imagens/imagem%20(21).png)
+
+Detalhe do `delivery-standard` com as três assinaturas confirmadas:
+
+![Tópico Standard e assinaturas](imagens/imagem%20(22).png)
+
+Detalhe do `delivery-fifo.fifo` com a Deduplicacao_Por_Conteudo habilitada e as três assinaturas:
+
+![Tópico FIFO, deduplicação por conteúdo e assinaturas](imagens/imagem%20(23).png)
+
+**SQS — filas (Etapas 3 e 4).** As seis filas de destino e as duas DLQs:
+
+![SQS — lista das oito filas](imagens/imagem%20(27).png)
+
+**Access_Policy_Fila (Etapas 5 e 6).** A política de acesso de uma fila de destino autorizando o SNS a publicar:
+
+![Access_Policy_Fila de uma fila de destino](imagens/imagem%20(33).png)
+
+**IAM (Etapa 8).** A IAM_Role_EC2 com as duas políticas anexadas:
+
+![IAM Role da EC2](imagens/imagem%20(24).png)
+
+Permissões de privilégio mínimo da `sns-delivery-lab-policy`:
+
+![Política IAM de privilégio mínimo](imagens/imagem%20(25).png)
+
+**Grupo de Segurança (Etapa 9).** Regra de entrada apenas na porta 8000, restrita à origem autorizada (porta 22 sem regra):
+
+![Security Group com a porta 8000 restrita](imagens/imagem%20(26).png)
+
+**EC2 (Etapa 10).** A instância do laboratório em execução, com a IAM Role anexada e IMDSv2 obrigatório:
+
+![Instância EC2 em execução](imagens/imagem%20(31).png)
+
+**Elastic IP (Etapa 13).** O endereço fixo associado à instância, para o cenário de liga/desliga:
+
+![Elastic IP associado à instância](imagens/imagem%20(30).png)
+
+**Dashboard final.** Após a verificação de inicialização bem-sucedida, o Dashboard é servido com a visão geral, as estatísticas por cenário e os parâmetros de Config_Aplicada e Config_Simulacao:
+
+![Dashboard — visão geral e estatísticas](imagens/imagem%20(15).png)
+
+![Dashboard — Config_Simulacao e Config_Aplicada](imagens/imagem%20(36).png)
+
 ---
 
 ## 5. Tratamento de falhas de etapa
