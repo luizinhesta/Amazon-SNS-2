@@ -111,6 +111,8 @@ uvicorn app.main_sns:app --host 0.0.0.0 --port 8000
 
 Esse comando sobe o servidor ASGI Uvicorn servindo a aplicação FastAPI definida em `app/main_sns.py`. O que esperar: na inicialização, a aplicação executa a verificação de recursos AWS (tópicos, assinaturas, filas, DLQs, IAM Role e EC2); se tudo estiver acessível, o Dashboard fica disponível no host e porta configurados; se algum recurso faltar, a inicialização é interrompida e o Dashboard informa, em pt-BR, qual recurso falhou. Para rodar a suíte de testes localmente (que não exige AWS), use `python -m pytest` na raiz do projeto — a suíte completa executa com 537 testes passando.
 
+Em produção (na EC2), prefira rodar a aplicação como um serviço **systemd** (`deploy/sns-delivery-lab.service`) em vez do `uvicorn` avulso: isso garante processo único na porta, reinício automático em falha e start no boot, com os parâmetros sensíveis lidos de um `EnvironmentFile` fora do repositório. O passo a passo está na Etapa 12 do [`IMPLANTACAO.md`](IMPLANTACAO.md), que também traz uma tabela de solução de problemas comuns (conflito de porta, instância sem `InstanceId` na verificação, cache do navegador).
+
 ## 16. Como remover os recursos AWS
 
 Como todos os recursos foram criados manualmente, a remoção também é manual, no Console AWS, respeitando a ordem de dependência para evitar erros. O roteiro é:

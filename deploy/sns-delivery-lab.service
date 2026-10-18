@@ -12,7 +12,11 @@
 #   1) Copie este arquivo para /etc/systemd/system/sns-delivery-lab.service
 #        sudo cp /opt/amazon-sns2/deploy/sns-delivery-lab.service \
 #          /etc/systemd/system/sns-delivery-lab.service
-#   2) Ajuste os valores de Environment= abaixo (usuario/senha/origens/instance id).
+#   2) RECOMENDADO: crie o arquivo de segredos /etc/sns-delivery-lab.env
+#      (chmod 600) com as variáveis CHAVE=valor, comente as linhas Environment=
+#      abaixo e descomente a linha EnvironmentFile=. Veja a Etapa 12 do
+#      IMPLANTACAO.md para o passo a passo completo (inclui o instance id via
+#      token IMDSv2). Alternativamente, preencha os Environment= inline.
 #   3) Garanta que nenhum uvicorn manual esteja rodando:
 #        pkill -f 'uvicorn app.main_sns:app' ; sleep 2
 #   4) Recarregue o systemd e habilite o serviço:
@@ -26,7 +30,7 @@
 # Observações:
 #   - Credenciais da AWS NÃO ficam aqui: a autenticação é pela IAM_Role_EC2
 #     (Req. 12.1, 12.2). Só as variáveis do Dashboard e os identificadores do
-#     laboratório são definidos em Environment=.
+#     laboratório são definidos em Environment= ou no EnvironmentFile.
 #   - O usuário/grupo e os caminhos abaixo assumem a implantação padrão em
 #     /opt/amazon-sns2 com o venv em .venv. Ajuste se a sua instalação diferir.
 

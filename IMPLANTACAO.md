@@ -206,13 +206,43 @@ Para cada assinatura:
       ]
     },
     {
-      "Sid": "ConsultarAssinaturas",
+      "Sid": "ListarTopicosSNS",
       "Effect": "Allow",
-      "Action": "sns:ListSubscriptionsByTopic",
+      "Action": "sns:ListTopics",
+      "Resource": "*"
+    },
+    {
+      "Sid": "ConsultarTopicosEAssinaturas",
+      "Effect": "Allow",
+      "Action": [
+        "sns:GetTopicAttributes",
+        "sns:ListSubscriptionsByTopic"
+      ],
       "Resource": [
         "arn:aws:sns:us-east-1:<account-id>:delivery-standard",
         "arn:aws:sns:us-east-1:<account-id>:delivery-fifo.fifo"
       ]
+    },
+    {
+      "Sid": "ConsultarAtributosAssinaturas",
+      "Effect": "Allow",
+      "Action": "sns:GetSubscriptionAttributes",
+      "Resource": "arn:aws:sns:us-east-1:<account-id>:*"
+    },
+    {
+      "Sid": "ConsultarRoleEC2",
+      "Effect": "Allow",
+      "Action": "iam:GetRole",
+      "Resource": "arn:aws:iam::<account-id>:role/sns-delivery-lab-ec2-role"
+    },
+    {
+      "Sid": "ConsultarInstanciaEC2",
+      "Effect": "Allow",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": { "ec2:Region": "us-east-1" }
+      }
     },
     {
       "Sid": "LerFilasEDlqsEAjustarPolicyTemporaria",
@@ -237,6 +267,8 @@ Para cada assinatura:
   ]
 }
 ```
+
+> **Por que cada permissão.** `sns:Publish` publica nas mensagens dos cenários; `sns:ListTopics`, `sns:GetTopicAttributes` e `sns:ListSubscriptionsByTopic` montam a arquitetura visual e confirmam o tipo/deduplicação dos tópicos; `sns:GetSubscriptionAttributes` lê a Redrive_Policy_SNS de cada assinatura; `iam:GetRole` e `ec2:DescribeInstances` são usados pela **verificação de inicialização** (Req. 1.9) para confirmar a IAM Role e a instância EC2 — sem `ec2:DescribeInstances`, a verificação falha com `MissingParameter`/`AccessDenied` e o Dashboard não é servido; o bloco de SQS lê as filas de destino e as DLQs (leitura não destrutiva) e, **apenas** no cenário de Falha_Entrega_Controlada, ajusta temporariamente a Access_Policy_Fila via `sqs:SetQueueAttributes` (única permissão de escrita, reversível).
 
 2. Nomeie a política como `sns-delivery-lab-policy` e clique em **Criar política** (*Create policy*).
 3. Vá em **IAM** → **Funções** (*Roles*) → **Criar função** (*Create role*).
@@ -345,7 +377,84 @@ uvicorn app.main_sns:app --host 0.0.0.0 --port 8000
 
 - **Resultado esperado:** o Dashboard "AWS SNS Delivery Lab" carrega em pt-BR, exibindo a arquitetura (dois tópicos, seis assinaturas, seis filas, duas DLQs) e as quatro ações principais.
 
-> **Execução permanente (opcional).** Para manter a aplicação ativa após fechar a sessão, crie um serviço `systemd` com `ExecStart` apontando para o `uvicorn` do ambiente virtual e as variáveis no bloco `Environment=`, e habilite com `sudo systemctl enable --now sns-delivery-lab`. Assim o processo reinicia automaticamente e não depende do terminal do Session Manager.
+> **Execução permanente (recomendado).** Rodar o `uvicorn` manualmente com `nohup ... &` funciona para um teste rápido, mas tem um risco real: nada impede subir um segundo processo por cima do primeiro, e os dois disputam a porta 8000 (erro `address already in use`), deixando a aplicação em estado inconsistente. Para produção, use o serviço `systemd` descrito na **Etapa 12**, que garante um único processo, reinício automático em falha e start no boot.
+
+### Etapa 12 — Execução gerenciada com systemd (recomendado)
+
+Esta etapa substitui o `uvicorn` manual por um serviço `systemd`, de modo que a aplicação rode como um único processo, reinicie sozinha em caso de falha e suba automaticamente no boot da instância. O repositório já traz a *unit* pronta em `deploy/sns-delivery-lab.service`.
+
+1. Criar o arquivo de variáveis de ambiente **fora do git** (para não versionar segredos), com permissão restrita:
+
+```bash
+sudo tee /etc/sns-delivery-lab.env > /dev/null <<'EOF'
+DASHBOARD_SNS_USUARIO=admin
+DASHBOARD_SNS_SENHA=defina-uma-senha-forte
+DASHBOARD_SNS_ORIGENS_AUTORIZADAS=SEU_IP_PUBLICO
+SNS_LAB_IAM_ROLE=sns-delivery-lab-ec2-role
+SNS_LAB_EC2_INSTANCE_ID=SEU_INSTANCE_ID
+EOF
+sudo chmod 600 /etc/sns-delivery-lab.env
+```
+
+- **O que faz:** grava as variáveis lidas por `app/main_sns.py` (usuário/senha do Dashboard, origens autorizadas, nome da IAM Role e ID da instância) num arquivo só de leitura pelo root.
+- **Por que:** mantém os segredos fora do repositório e centralizados. Nenhuma Access Key da AWS entra aqui — a autenticação segue pela IAM_Role_EC2 (Req. 12.1, 12.2).
+- **Atenção ao `SNS_LAB_EC2_INSTANCE_ID`:** informe o `i-...` **real** da instância. Na Amazon Linux 2023 (IMDSv2), ler o ID pela metadata exige um token; um `curl` simples sem token devolve vazio, e um ID vazio faz a verificação de inicialização falhar (ver a Seção 5). Pegue o ID com o comando abaixo e copie o valor para o arquivo:
+
+```bash
+TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 60")
+curl -s -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-id
+```
+
+> **Origens (`DASHBOARD_SNS_ORIGENS_AUTORIZADAS`).** Informe o seu IP público para restringir o login. Se o seu IP muda com frequência (redes com CGNAT costumam alternar o IP de saída), pode usar `*` para liberar o login de qualquer origem **apenas em ambiente de laboratório**; nesse caso, a proteção de acesso passa a depender exclusivamente do Security Group (porta 8000 restrita).
+
+2. Instalar a *unit* e apontar para o arquivo de variáveis:
+
+```bash
+sudo cp /opt/amazon-sns2/deploy/sns-delivery-lab.service /etc/systemd/system/sns-delivery-lab.service
+# desativa os Environment= inline (placeholders) e ativa o EnvironmentFile
+sudo sed -i 's/^Environment=/#Environment=/' /etc/systemd/system/sns-delivery-lab.service
+sudo sed -i 's|^# EnvironmentFile=/etc/sns-delivery-lab.env|EnvironmentFile=/etc/sns-delivery-lab.env|' /etc/systemd/system/sns-delivery-lab.service
+```
+
+- **O que faz:** copia a *unit* para o diretório do systemd e a configura para ler as variáveis de `/etc/sns-delivery-lab.env`.
+- **Por que:** separa a configuração (service versionado) dos segredos (arquivo local), como recomenda a própria *unit*.
+
+3. Garantir que nenhum `uvicorn` manual esteja rodando e subir o serviço:
+
+```bash
+pkill -f 'uvicorn app.main_sns:app' || true
+sleep 2
+sudo systemctl daemon-reload
+sudo systemctl enable --now sns-delivery-lab
+```
+
+- **O que faz:** encerra qualquer `uvicorn` avulso (evita o conflito de porta), recarrega as *units* e habilita + inicia o serviço.
+- **Resultado esperado:** o serviço sobe e fica habilitado no boot (o systemd cria o *symlink* em `multi-user.target.wants`).
+
+4. Verificar:
+
+```bash
+systemctl status sns-delivery-lab --no-pager
+curl -i http://localhost:8000/api/saude
+```
+
+- **Resultado esperado:** `Active: active (running)` no status e `HTTP/1.1 200 OK` no `curl`, com `"saudavel":true` no corpo. Os logs ficam no journald: `sudo journalctl -u sns-delivery-lab -n 50 --no-pager` (ou `-f` para acompanhar em tempo real).
+
+> **Trocar a senha depois.** Edite `/etc/sns-delivery-lab.env` e rode `sudo systemctl restart sns-delivery-lab`. O serviço relê as variáveis na reinicialização.
+
+### Etapa 13 — Elastic IP para IP fixo (recomendado se você liga/desliga a EC2)
+
+Por padrão, o IP público de uma instância EC2 **muda a cada parada/início** (*stop/start*). Se você pretende **desligar e ligar a instância várias vezes** (prática comum para economizar custo em laboratório), associe um **Elastic IP**: o endereço passa a ser fixo e a URL do Dashboard não muda entre os ciclos. Combinado com o serviço systemd (Etapa 12), que sobe a aplicação automaticamente no boot, o laboratório fica acessível sempre na mesma URL após cada ligamento.
+
+1. **EC2 → Rede e segurança → IPs elásticos** (*Elastic IPs*) → **Alocar endereço IP elástico** (*Allocate Elastic IP address*) → **Alocar**. Dê um nome na *tag* (ex.: `sns-delivery-lab-eip`).
+2. Selecione o IP alocado → **Ações** (*Actions*) → **Associar endereço IP elástico** (*Associate Elastic IP address*) → escolha a instância `sns-delivery-lab` → **Associar**.
+3. Confirme em **EC2 → Instâncias** que o **IP público** da instância passou a ser o Elastic IP. Use esse endereço fixo para acessar `http://<ELASTIC_IP>:8000/`.
+
+- **O que faz:** fixa o IP público da instância, de modo que *stop/start* não altere o endereço.
+- **Por que:** no cenário de liga/desliga, evita ter de descobrir o novo IP a cada início e mantém uma URL de acesso estável (Req. 15.x de operação do laboratório).
+- **Resultado esperado:** o Dashboard responde no mesmo IP após cada reinício; `GET /api/saude` continua retornando `"saudavel":true`.
+
+> **Custo do Elastic IP.** A AWS cobra uma pequena taxa horária por endereço IPv4 público (inclusive Elastic IP) e, em especial, por Elastic IP **alocado mas não associado** a uma instância em execução. Enquanto associado à sua instância, o custo é de centavos por dia. Ao encerrar o laboratório, **libere o Elastic IP** (ver a Seção 7) para não pagar por um IP ocioso.
 
 ---
 
@@ -384,6 +493,9 @@ Se um passo não puder ser concluído por **recurso ausente**, **permissão insu
 | Session Manager não conecta | Falta `AmazonSSMManagedInstanceCore` ou sem rota de saída | EC2 → Conectar → Session Manager com **Conectar** desabilitado | Anexar a política SSM à função (Etapa 8); garantir saída de rede (Etapa 9) | O botão **Conectar** do Session Manager fica habilitado |
 | Dashboard não abre no navegador | Porta 8000 fechada ou origem não autorizada | Tempo esgotado no navegador; `DASHBOARD_SNS_ORIGENS_AUTORIZADAS` sem o IP | Liberar a porta 8000 só para a origem (Etapa 9) e incluir o IP na variável (Etapa 11.4) | O login do Dashboard é exibido |
 | Login sempre bloqueado | Nenhuma origem autorizada configurada | Aviso de segurança em pt-BR no log de inicialização | Definir `DASHBOARD_SNS_ORIGENS_AUTORIZADAS` com o IP (ou `=*` apenas para teste) e reiniciar | O login passa a aceitar as credenciais |
+| `[Errno 98] address already in use` ao iniciar o `uvicorn` | Já existe outro processo `uvicorn` ouvindo a porta 8000 (ex.: um `nohup` anterior) | `sudo ss -tlnp \| grep 8000` mostra um processo ativo; o log traz `address already in use` | Encerrar os processos avulsos (`pkill -f 'uvicorn app.main_sns:app'`) e usar o serviço systemd da Etapa 12 (processo único) | `sudo ss -tlnp \| grep 8000` mostra apenas o processo do serviço |
+| `HTTP 503` com "recurso instância EC2 ausente/inacessível" e erro `MissingParameter ... InstanceId` | `SNS_LAB_EC2_INSTANCE_ID` vazio (metadata IMDSv2 lida sem token devolve vazio) | A mensagem do 503 cita `DescribeInstances` sem `InstanceId`; `grep SNS_LAB_EC2_INSTANCE_ID /etc/sns-delivery-lab.env` mostra valor em branco | Preencher o ID real (obtido com o token IMDSv2 da Etapa 12) e `sudo systemctl restart sns-delivery-lab` | `GET /api/saude` responde `"saudavel":true` e `/` serve o Dashboard (HTTP 200) |
+| Faixa vermelha "Não foi possível atualizar as estatísticas", mas o `fetch` retorna HTTP 200 | Dashboard desatualizado no navegador (cache) após uma correção de JS | No DevTools, a requisição de estatísticas está 200, mas o Console pode mostrar erro de JS antigo | Atualizar o código (`git pull`) e dar *hard refresh* no navegador (`Ctrl+Shift+R`) para furar o cache | A faixa some e aparece "Última atualização bem-sucedida" com data/hora/fuso |
 
 ---
 
@@ -421,8 +533,9 @@ Ao encerrar o laboratório, remova **todos** os recursos abaixo. Siga a ordem in
 | 6 | DLQ_SNS_Standard | `delivery-sns-dlq-standard` | SQS → **Excluir** (*Delete*) | Após remover as assinaturas |
 | 7 | DLQ_SNS_FIFO | `delivery-sns-dlq.fifo` | SQS → **Excluir** (*Delete*) | Após remover as assinaturas |
 | 8 | Instância EC2 | `sns-delivery-lab` | EC2 → Instâncias → **Encerrar** (*Terminate*) | Libera a Função do IAM anexada e o volume EBS raiz |
-| 9 | Grupo de Segurança | `sns-delivery-lab-sg` | EC2 → Grupos de segurança → **Excluir** (*Delete*) | Só é possível após encerrar a instância |
-| 10 | Função do IAM | `sns-delivery-lab-ec2-role` | IAM → Funções → **Excluir** (*Delete*) | Após encerrar a instância que a usava |
-| 11 | Política do IAM | `sns-delivery-lab-policy` | IAM → Políticas → **Excluir** (*Delete*) | Após excluir a função que a referenciava |
+| 9 | Elastic IP (se criado na Etapa 13) | `sns-delivery-lab-eip` | EC2 → IPs elásticos → **Desassociar** e depois **Liberar** (*Release*) | Liberar após encerrar a instância, para não pagar por IP ocioso |
+| 10 | Grupo de Segurança | `sns-delivery-lab-sg` | EC2 → Grupos de segurança → **Excluir** (*Delete*) | Só é possível após encerrar a instância |
+| 11 | Função do IAM | `sns-delivery-lab-ec2-role` | IAM → Funções → **Excluir** (*Delete*) | Após encerrar a instância que a usava |
+| 12 | Política do IAM | `sns-delivery-lab-policy` | IAM → Políticas → **Excluir** (*Delete*) | Após excluir a função que a referenciava |
 
 Após executar a exclusão, **confirme** que nenhum recurso da lista permanece ativo (reveja as listas de SNS, SQS, EC2 e IAM). Se algum recurso remanescer, identifique-o pelo nome/identificador e repita a exclusão correspondente, respeitando a ordem acima.

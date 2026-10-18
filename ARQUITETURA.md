@@ -265,13 +265,18 @@ A `IAM_Role_EC2` é a **única** forma de autenticação da aplicação com a AW
 | Permissão IAM (ação) | Alvo | Para que serve |
 |----------------------|------|----------------|
 | `sns:Publish` | Os dois tópicos (`Topico_Standard`, `Topico_FIFO`) | Publicar as mensagens dos cenários Standard, FIFO, comparação e teste de DLQ. |
+| `sns:ListTopics` | `*` | Listar os tópicos para compor a representação visual da arquitetura. |
+| `sns:GetTopicAttributes` | Os dois tópicos | Confirmar o tipo do tópico e a `Deduplicacao_Por_Conteudo` do FIFO (Config_Aplicada). |
 | `sns:ListSubscriptionsByTopic` | Os dois tópicos | Listar as `Assinatura_SNS` para apresentar a arquitetura e permitir a seleção no teste de DLQ. |
+| `sns:GetSubscriptionAttributes` | Assinaturas da conta na região (`arn:aws:sns:us-east-1:<conta>:*`) | Ler a `Redrive_Policy_SNS` e demais atributos de cada assinatura. |
+| `iam:GetRole` | A própria `IAM_Role_EC2` | Confirmar, na **verificação de inicialização**, que a IAM Role existe e está acessível. |
+| `ec2:DescribeInstances` | `*` (restrito à região `us-east-1` por condição) | Confirmar, na **verificação de inicialização**, que a instância EC2 existe e está acessível. Sem esta ação a verificação falha e o Dashboard não é servido. |
 | `sqs:ReceiveMessage` | As seis filas de destino e as duas DLQs | Ler as mensagens (leitura não destrutiva) para confirmar as entregas e as presenças na DLQ. |
 | `sqs:GetQueueAttributes` | As seis filas de destino e as duas DLQs | Consultar atributos (ex.: `Access_Policy_Fila`, contagens) na verificação de inicialização e na preparação da falha controlada. |
 | `sqs:GetQueueUrl` | As seis filas de destino e as duas DLQs | Resolver a URL de cada fila a partir do nome. |
 | `sqs:SetQueueAttributes` | A fila de destino da assinatura selecionada no teste de DLQ | Ajustar **temporariamente** a `Access_Policy_Fila` (aplicar o `Deny` e restaurar a policy original) no cenário de `Falha_Entrega_Controlada`. É a única permissão de escrita, usada apenas nesse cenário reversível. |
 
-Resumo dos privilégios mínimos: **publicar nos tópicos**, **listar assinaturas**, **ler filas de destino e DLQs** e **ajustar temporariamente a Access Policy** da fila alvo do teste de DLQ. Não há permissões para criar, modificar ou excluir tópicos, assinaturas ou filas, nem qualquer ação administrativa.
+Resumo dos privilégios mínimos: **publicar nos tópicos**, **listar e consultar tópicos e assinaturas**, **confirmar a IAM Role e a instância EC2** na verificação de inicialização, **ler filas de destino e DLQs** e **ajustar temporariamente a Access Policy** da fila alvo do teste de DLQ. Não há permissões para criar, modificar ou excluir tópicos, assinaturas ou filas, nem qualquer ação administrativa. A única permissão de escrita é o `sqs:SetQueueAttributes`, usada exclusivamente no ajuste reversível do teste de DLQ.
 
 Complementam a segurança:
 
@@ -290,3 +295,5 @@ graph LR
 ```
 
 A arquitetura **não** usa `NAT Gateway` nem `Elastic Load Balancer` (salvo justificativa técnica documentada), para controle de custos. A administração da EC2 ocorre apenas via **Session Manager**, com a porta 22 (SSH) sem regra de entrada liberada no Security Group. Todos os recursos AWS são criados **manualmente** no Console AWS (sem IaC); a aplicação apenas verifica e usa os recursos existentes, com a única exceção do ajuste temporário e reversível da `Access_Policy_Fila` no cenário de `Falha_Entrega_Controlada`. O passo a passo numerado de criação, verificação e exclusão dos recursos está em `IMPLANTACAO.md`.
+
+Em produção, o processo da aplicação roda como um serviço **systemd** (`deploy/sns-delivery-lab.service`), e não com um `uvicorn` avulso: isso garante um único processo dono da porta da aplicação (evitando conflitos de `address already in use`), reinício automático em falha e start no boot da instância. Os parâmetros sensíveis (usuário/senha do Dashboard e identificadores do laboratório) vêm de um `EnvironmentFile` fora do repositório; nenhuma Access Key da AWS é definida ali, pois a autenticação permanece pela `IAM_Role_EC2`. O passo a passo de instalação do serviço está na Etapa 12 do `IMPLANTACAO.md`.
