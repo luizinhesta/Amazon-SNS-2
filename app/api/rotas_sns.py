@@ -49,8 +49,10 @@ Referências de requisitos: 1.9, 1.11, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2
 
 from __future__ import annotations
 
+from functools import lru_cache
 from typing import Any, Callable, Iterable, Optional
 
+import boto3
 from fastapi import APIRouter, FastAPI, Request
 from pydantic import BaseModel, Field
 
@@ -1723,18 +1725,18 @@ def criar_app_sns(
 # Resolvedores padrão de ARN de tópico e URL de fila (produção)
 # ---------------------------------------------------------------------------
 def _resolver_arn_topico_padrao(regiao: str = c.REGIAO_AWS) -> Callable[[str], str]:
-    """Cria um resolvedor de ARN de tópico a partir do nome (sem conta explícita).
+    """Cria um resolvedor de ARN de tópico a partir do nome.
 
-    O ARN de um tópico SNS tem o formato
-    ``arn:aws:sns:<regiao>:<conta>:<nome>``. Como a aplicação resolve credenciais
-    pela IAM Role da EC2 e não fixa o número da conta, o resolvedor padrão não é
-    suficiente para produção real; nas tarefas seguintes o ARN virá da verificação
-    de inicialização (que já resolve o ARN por ``list_topics``). Aqui expomos um
-    resolvedor placeholder para o wiring, substituível por injeção nos testes.
+    O ARN de um tópico SNS tem o formato ``arn:aws:sns:<regiao>:<conta>:<nome>``.
+    O número da conta **não** é fixado em código: é descoberto em tempo de execução
+    via ``sts:GetCallerIdentity`` (a mesma IAM Role da EC2 que autentica o resto da
+    aplicação), e memoizado para não repetir a chamada. Assim o laboratório funciona
+    em qualquer conta sem configuração adicional, respeitando o princípio de não
+    hardcodar credenciais nem identificadores (Req. 12.1, 12.2).
     """
 
     def _resolver(nome: str) -> str:
-        return f"arn:aws:sns:{regiao}:000000000000:{nome}"
+        return f"arn:aws:sns:{regiao}:{_obter_account_id(regiao)}:{nome}"
 
     return _resolver
 
@@ -1743,16 +1745,29 @@ def _resolver_url_fila_padrao(regiao: str = c.REGIAO_AWS) -> Callable[[str], str
     """Cria um resolvedor de URL de fila a partir do nome.
 
     A URL de uma fila SQS tem o formato
-    ``https://sqs.<regiao>.amazonaws.com/<conta>/<nome>``. Como o número da conta
-    não é fixado, o resolvedor padrão é um placeholder para o wiring, substituível
-    por injeção nos testes e, nas tarefas seguintes, pela resolução via
-    ``get_queue_url``.
+    ``https://sqs.<regiao>.amazonaws.com/<conta>/<nome>``. Como no resolvedor de ARN,
+    o número da conta é descoberto via ``sts:GetCallerIdentity`` e memoizado, sem
+    fixar o identificador em código.
     """
 
     def _resolver(nome: str) -> str:
-        return f"https://sqs.{regiao}.amazonaws.com/000000000000/{nome}"
+        return f"https://sqs.{regiao}.amazonaws.com/{_obter_account_id(regiao)}/{nome}"
 
     return _resolver
+
+
+@lru_cache(maxsize=4)
+def _obter_account_id(regiao: str = c.REGIAO_AWS) -> str:
+    """Descobre o ID da conta AWS via STS, memoizando o resultado.
+
+    Usa a cadeia de credenciais padrão do ``boto3`` (IAM Role da EC2), sem Access
+    Keys fixas. O resultado é cacheado por região com ``lru_cache`` para evitar uma
+    chamada ao STS a cada disparo. Em produção na EC2, resolve o número real da
+    conta do laboratório; em testes, os resolvedores são injetados e esta função
+    não é chamada.
+    """
+    sts = boto3.client("sts", region_name=regiao)
+    return sts.get_caller_identity()["Account"]
 
 
 def _montar_servico_disparo(
